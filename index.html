@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de SPOOL</title>
+  <title>Rastreamento de S-B-O-O-L</title>
 
   <!-- Ícones (use o mesmo nome do arquivo que está no repo) -->
   <link rel="icon" href="icon.PNG?v=1">
@@ -43,9 +43,7 @@
       padding:26px 14px;
     }
 
-    .wrap{
-      width:min(820px, 100%);
-    }
+    .wrap{ width:min(820px, 100%); }
 
     .card{
       background: linear-gradient(180deg, rgba(17,28,56,.85), rgba(10,18,36,.85));
@@ -89,7 +87,6 @@
       color: var(--muted);
       max-width: 100%;
     }
-
     .pill b{ color: var(--text); }
 
     label{
@@ -141,9 +138,7 @@
       transition: transform .06s ease, filter .12s ease;
     }
     button:active{ transform: translateY(1px); }
-    .btnSearch{
-      background: linear-gradient(180deg, var(--btn), var(--btn2));
-    }
+    .btnSearch{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
     .btnClear{
       background: linear-gradient(180deg, rgba(30,41,76,.9), rgba(14,20,42,.9));
       border: 1px solid rgba(43,58,102,.9);
@@ -209,15 +204,6 @@
       text-align:right;
     }
 
-    .badge{
-      display:inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing:.04em;
-      text-transform: uppercase;
-    }
     .b-ok{ background: rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.35); color: #b7f7cd; }
     .b-warn{ background: rgba(251,191,36,.18); border:1px solid rgba(251,191,36,.35); color: #ffe6a6; }
     .b-bad{ background: rgba(255,77,77,.18); border:1px solid rgba(255,77,77,.35); color: #ffb5b5; }
@@ -234,15 +220,15 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>RASTREAMENTO DE SPOOL</h1>
-      <p class="sub">Cole o TAG do SPOOL e pesquise. Atualiza e todo mundo vê.</p>
+      <h1>RASTREAMENTO DE S-B-O-O-L</h1>
+      <p class="sub">Cole o TAG do S-B-O-O-L e pesquise. Atualiza e todo mundo vê.</p>
 
       <div class="pillrow">
-        <div class="pill" id="sbStatus"><b>Supabase:</b> iniciando...</div>
+        <div class="pill b-warn" id="sbStatus"><b>Supabase:</b> testando conexão...</div>
         <div class="pill"><b>Tabela:</b> public.spools / <b>Coluna:</b> nome_spool</div>
       </div>
 
-      <label for="tagInput">TAG do SPOOL</label>
+      <label for="tagInput">TAG do S-B-O-O-L</label>
       <input
         id="tagInput"
         class="inputBig"
@@ -288,12 +274,16 @@
     </div>
   </div>
 
-  <!-- 1) Carrega supabase-js (CDN 1). Se falhar, tenta CDN 2 automaticamente. -->
   <script>
+    // ✅ SUAS CREDENCIAIS
+    const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
+    const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
+
     function setLog(msg) {
       const el = document.getElementById("logBox");
       if (el) el.textContent = msg;
     }
+
     function setSbPill(text, kind) {
       const pill = document.getElementById("sbStatus");
       if (!pill) return;
@@ -302,55 +292,11 @@
       if (kind) pill.classList.add(kind);
     }
 
-    function loadScript(src) {
-      return new Promise((resolve, reject) => {
-        const s = document.createElement("script");
-        s.src = src;
-        s.async = true;
-        s.onload = resolve;
-        s.onerror = reject;
-        document.head.appendChild(s);
-      });
-    }
-
-    async function ensureSupabaseLib() {
-      setSbPill("carregando biblioteca…", "b-warn");
-      try {
-        await loadScript("https://unpkg.com/@supabase/supabase-js@2");
-        if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
-        return true;
-      } catch (e1) {
-        try {
-          await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
-          if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
-          return true;
-        } catch (e2) {
-          setSbPill("falhou carregar biblioteca", "b-bad");
-          setLog(
-            "ERRO: não consegui carregar supabase-js.\n" +
-            "CDN1 (unpkg) falhou e CDN2 (jsdelivr) falhou.\n" +
-            "Isso é rede/bloqueio do Safari.\n\n" +
-            "Detalhe 1: " + (e1?.message || e1) + "\n" +
-            "Detalhe 2: " + (e2?.message || e2)
-          );
-          return false;
-        }
-      }
-    }
-  </script>
-
-  <!-- 2) App -->
-  <script>
-    // ✅ SUAS CREDENCIAIS (do jeito que você mandou)
-const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
-const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
-    let sb = null;
-
     function cleanTag(raw) {
       return (raw || "")
         .trim()
         .toUpperCase()
-        .replace(/\s+/g, ""); // remove espaços
+        .replace(/\s+/g, "");
     }
 
     function setOut(id, val) {
@@ -365,26 +311,25 @@ const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
       setOut("outAtualizado", "—");
     }
 
-    async function init() {
-      const ok = await ensureSupabaseLib();
-      if (!ok) return;
-
+    async function testConnection() {
       try {
-        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        setSbPill("conectado ✅", "b-ok");
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
+          headers: {
+            apikey: SUPABASE_APIKEY,
+            Authorization: `Bearer ${SUPABASE_APIKEY}`,
+            Accept: "application/json"
+          }
+        });
+        // Mesmo se der 404/401 aqui, o importante é não dar "Load failed"
+        setSbPill("online ✅", "b-ok");
         setLog("Pronto. Cole um TAG e clique BUSCAR.");
       } catch (e) {
-        setSbPill("erro no client", "b-bad");
-        setLog("ERRO criando client: " + (e?.message || e));
+        setSbPill("falha de conexão", "b-bad");
+        setLog("Falha ao conectar no Supabase.\nDetalhe: " + (e?.message || e));
       }
     }
 
     async function buscar() {
-      if (!sb) {
-        setLog("Ainda não conectou no Supabase. Veja o status acima.");
-        return;
-      }
-
       const input = document.getElementById("tagInput");
       const tag = cleanTag(input?.value);
 
@@ -396,30 +341,30 @@ const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
       clearOutputs();
       setLog("Buscando: " + tag + " …");
 
-      try {
-        const { data, error } = await sb
-          .from("spools")
-          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
-          .eq("nome_spool", tag)
-          .limit(1);
+      const url =
+        `${SUPABASE_URL}/rest/v1/spools` +
+        `?select=nome_spool,status,localizacao,responsavel,atualizado_em` +
+        `&nome_spool=eq.${encodeURIComponent(tag)}` +
+        `&limit=1`;
 
-        if (error) {
-          // Aqui aparece 401/403/Policy etc
-          setLog(
-            "Erro buscando no banco.\n\n" +
-            JSON.stringify(
-              {
-                message: error.message,
-                details: error.details || "",
-                hint: error.hint || "",
-                code: error.code || ""
-              },
-              null,
-              2
-            )
-          );
+      try {
+        const res = await fetch(url, {
+          method: "GET",
+          headers: {
+            apikey: SUPABASE_APIKEY,
+            Authorization: `Bearer ${SUPABASE_APIKEY}`,
+            Accept: "application/json"
+          }
+        });
+
+        const text = await res.text();
+
+        if (!res.ok) {
+          setLog("Erro buscando no banco.\n\nHTTP " + res.status + "\n" + text);
           return;
         }
+
+        const data = JSON.parse(text);
 
         if (!data || data.length === 0) {
           setLog("Não achei esse TAG no banco: " + tag);
@@ -436,15 +381,7 @@ const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
         setOut("outAtualizado", row.atualizado_em);
 
       } catch (e) {
-        // “TypeError: Load failed” vem aqui (rede / bloqueio / CORS / etc.)
-        setLog(
-          "Falha geral (rede/bloqueio).\n" +
-          "Detalhe: " + (e?.message || e) + "\n\n" +
-          "Se isso acontecer no Safari, normalmente é:\n" +
-          "- CDN bloqueado\n" +
-          "- rede oscilando\n" +
-          "- tentativa de fetch falhando"
-        );
+        setLog("Falha geral.\nDetalhe: " + (e?.message || e));
       }
     }
 
@@ -456,7 +393,7 @@ const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
     }
 
     window.addEventListener("load", () => {
-      init();
+      testConnection();
 
       const btnBuscar = document.getElementById("btnBuscar");
       const btnLimpar = document.getElementById("btnLimpar");
@@ -465,7 +402,6 @@ const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
       if (btnBuscar) btnBuscar.addEventListener("click", buscar);
       if (btnLimpar) btnLimpar.addEventListener("click", limpar);
 
-      // Enter também busca
       if (input) {
         input.addEventListener("keydown", (ev) => {
           if (ev.key === "Enter") buscar();
