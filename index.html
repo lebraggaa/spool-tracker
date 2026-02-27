@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de S-B-O-O-L</title>
+  <title>Rastreamento de SPOOL</title>
 
   <!-- Ícones (use o mesmo nome do arquivo que está no repo) -->
   <link rel="icon" href="icon.PNG?v=1">
@@ -43,7 +43,7 @@
       padding:26px 14px;
     }
 
-    .wrap{ width:min(820px, 100%); }
+    .wrap{ width:min(900px, 100%); }
 
     .card{
       background: linear-gradient(180deg, rgba(17,28,56,.85), rgba(10,18,36,.85));
@@ -89,6 +89,20 @@
     }
     .pill b{ color: var(--text); }
 
+    .badge{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+      border:1px solid transparent;
+    }
+    .b-ok{ background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.35); color: #b7f7cd; }
+    .b-warn{ background: rgba(251,191,36,.18); border-color: rgba(251,191,36,.35); color: #ffe6a6; }
+    .b-bad{ background: rgba(255,77,77,.18); border-color: rgba(255,77,77,.35); color: #ffb5b5; }
+
     label{
       display:block;
       margin: 14px 0 8px;
@@ -128,7 +142,7 @@
       border: none;
       border-radius: 18px;
       padding: 18px 14px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
@@ -138,11 +152,14 @@
       transition: transform .06s ease, filter .12s ease;
     }
     button:active{ transform: translateY(1px); }
-    .btnSearch{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
-    .btnClear{
+    .btnPrimary{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
+    .btnGhost{
       background: linear-gradient(180deg, rgba(30,41,76,.9), rgba(14,20,42,.9));
       border: 1px solid rgba(43,58,102,.9);
       box-shadow: none;
+    }
+    .btnDanger{
+      background: linear-gradient(180deg, rgba(255,77,77,.95), rgba(185,34,34,.95));
     }
 
     .section{
@@ -165,7 +182,7 @@
       white-space: pre-wrap;
       word-break: break-word;
       font-family: var(--mono);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.35;
       padding: 12px;
       border-radius: 14px;
@@ -202,11 +219,27 @@
       font-family: var(--mono);
       font-size: 14px;
       text-align:right;
+      overflow-wrap:anywhere;
     }
 
-    .b-ok{ background: rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.35); color: #b7f7cd; }
-    .b-warn{ background: rgba(251,191,36,.18); border:1px solid rgba(251,191,36,.35); color: #ffe6a6; }
-    .b-bad{ background: rgba(255,77,77,.18); border:1px solid rgba(255,77,77,.35); color: #ffb5b5; }
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+      margin-top: 10px;
+    }
+
+    .input, select{
+      width:100%;
+      border-radius: 14px;
+      border: 1px solid rgba(43,58,102,.9);
+      background: rgba(6,10,20,.55);
+      color: var(--text);
+      padding: 12px 12px;
+      font-size: 14px;
+      font-family: var(--mono);
+      outline:none;
+    }
 
     .foot{
       margin-top:12px;
@@ -220,15 +253,15 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>RASTREAMENTO DE S-B-O-O-L</h1>
-      <p class="sub">Cole o TAG do S-B-O-O-L e pesquise. Atualiza e todo mundo vê.</p>
+      <h1>RASTREAMENTO DE SPOOL</h1>
+      <p class="sub">Cole o TAG do SPOOL, consulte e atualize. Tudo fica registrado e todo mundo vê.</p>
 
       <div class="pillrow">
-        <div class="pill b-warn" id="sbStatus"><b>Supabase:</b> testando conexão...</div>
+        <div class="pill" id="sbStatus"><b>Supabase:</b> iniciando...</div>
         <div class="pill"><b>Tabela:</b> public.spools / <b>Coluna:</b> nome_spool</div>
       </div>
 
-      <label for="tagInput">TAG do S-B-O-O-L</label>
+      <label for="tagInput">TAG do SPOOL</label>
       <input
         id="tagInput"
         class="inputBig"
@@ -239,8 +272,8 @@
       />
 
       <div class="btnrow">
-        <button class="btnSearch" id="btnBuscar">BUSCAR</button>
-        <button class="btnClear" id="btnLimpar">LIMPAR</button>
+        <button class="btnPrimary" id="btnBuscar">BUSCAR</button>
+        <button class="btnGhost" id="btnLimpar">LIMPAR</button>
       </div>
 
       <div class="section">
@@ -251,6 +284,10 @@
       <div class="section">
         <div class="sectionTitle">Resultado</div>
         <div class="grid">
+          <div class="kv">
+            <div class="k">Nome do SPOOL</div>
+            <div class="v" id="outNome">—</div>
+          </div>
           <div class="kv">
             <div class="k">Status</div>
             <div class="v" id="outStatus">—</div>
@@ -270,15 +307,51 @@
         </div>
       </div>
 
-      <div class="foot">Se der erro, o log acima mostra exatamente o motivo.</div>
+      <div class="section">
+        <div class="sectionTitle">Atualizar (produção / movimentação)</div>
+
+        <div class="formGrid">
+          <div>
+            <label for="inStatus">Novo status</label>
+            <select id="inStatus">
+              <option value="">(não alterar)</option>
+              <option value="CHEGOU NA FABRICA">CHEGOU NA FABRICA</option>
+              <option value="EM FABRICACAO">EM FABRICACAO</option>
+              <option value="FABRICADO">FABRICADO</option>
+              <option value="EM INSPECAO">EM INSPECAO</option>
+              <option value="APROVADO">APROVADO</option>
+              <option value="REPROVADO">REPROVADO</option>
+              <option value="LIBERADO">LIBERADO</option>
+              <option value="EM TRANSPORTE">EM TRANSPORTE</option>
+              <option value="ENTREGUE">ENTREGUE</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="inLocalizacao">Localização (opcional)</label>
+            <input id="inLocalizacao" class="input" placeholder="EX: LINHA 2 / SETOR A / GALPAO" />
+          </div>
+
+          <div>
+            <label for="inResponsavel">Responsável (opcional)</label>
+            <input id="inResponsavel" class="input" placeholder="EX: LEANDRO / TURMA 3 / INSPETOR" />
+          </div>
+        </div>
+
+        <div class="btnrow">
+          <button class="btnPrimary" id="btnAtualizar">ATUALIZAR</button>
+          <button class="btnDanger" id="btnLimparAtualizacao">LIMPAR CAMPOS</button>
+        </div>
+
+        <div class="foot">Se o UPDATE falhar por política (RLS), o log vai mostrar o motivo.</div>
+      </div>
+
+      <div class="foot">Sistema interno • Se der erro, o log acima mostra exatamente o motivo.</div>
     </div>
   </div>
 
+  <!-- 1) Carrega supabase-js (CDN 1). Se falhar, tenta CDN 2 automaticamente. -->
   <script>
-    // ✅ SUAS CREDENCIAIS
-    const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
-    const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
-
     function setLog(msg) {
       const el = document.getElementById("logBox");
       if (el) el.textContent = msg;
@@ -292,11 +365,62 @@
       if (kind) pill.classList.add(kind);
     }
 
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ensureSupabaseLib() {
+      setSbPill("carregando biblioteca…", "b-warn");
+      try {
+        await loadScript("https://unpkg.com/@supabase/supabase-js@2");
+        if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
+        return true;
+      } catch (e1) {
+        try {
+          await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
+          if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
+          return true;
+        } catch (e2) {
+          setSbPill("falhou carregar biblioteca", "b-bad");
+          setLog(
+            "ERRO: não consegui carregar supabase-js.\n" +
+            "CDN1 (unpkg) falhou e CDN2 (jsdelivr) falhou.\n" +
+            "Isso é rede/bloqueio.\n\n" +
+            "Detalhe 1: " + (e1?.message || e1) + "\n" +
+            "Detalhe 2: " + (e2?.message || e2)
+          );
+          return false;
+        }
+      }
+    }
+  </script>
+
+  <!-- 2) App -->
+  <script>
+    // ✅ SUAS CREDENCIAIS (cole exatamente as suas)
+    // OBS: esse Project ID está OK: tilpzusjlfgxueieisws
+    const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
+
+    let sb = null;
+    let lastTag = "";
+
     function cleanTag(raw) {
       return (raw || "")
         .trim()
         .toUpperCase()
-        .replace(/\s+/g, "");
+        .replace(/\s+/g, ""); // remove espaços
+    }
+
+    function cleanFree(raw) {
+      return (raw || "").trim().toUpperCase();
     }
 
     function setOut(id, val) {
@@ -305,31 +429,60 @@
     }
 
     function clearOutputs() {
+      setOut("outNome", "—");
       setOut("outStatus", "—");
       setOut("outLocalizacao", "—");
       setOut("outResponsavel", "—");
       setOut("outAtualizado", "—");
     }
 
-    async function testConnection() {
+    function nowIso() {
+      return new Date().toISOString();
+    }
+
+    async function init() {
+      const ok = await ensureSupabaseLib();
+      if (!ok) return;
+
       try {
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/`, {
-          headers: {
-            apikey: SUPABASE_APIKEY,
-            Authorization: `Bearer ${SUPABASE_APIKEY}`,
-            Accept: "application/json"
-          }
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+          auth: { persistSession: false }
         });
-        // Mesmo se der 404/401 aqui, o importante é não dar "Load failed"
-        setSbPill("online ✅", "b-ok");
+
+        // Teste simples de conexão (não é “garantia total”, mas já acusa URL/KEY errados)
+        setSbPill("conectando…", "b-warn");
+        const t0 = Date.now();
+        const { error } = await sb.from("spools").select("id").limit(1);
+        const ms = Date.now() - t0;
+
+        if (error) {
+          setSbPill("erro (ver log)", "b-bad");
+          setLog(
+            "Falha ao conectar no Supabase.\n\n" +
+            JSON.stringify({
+              message: error.message,
+              details: error.details || "",
+              hint: error.hint || "",
+              code: error.code || ""
+            }, null, 2)
+          );
+          return;
+        }
+
+        setSbPill("online ✅ (" + ms + "ms)", "b-ok");
         setLog("Pronto. Cole um TAG e clique BUSCAR.");
       } catch (e) {
-        setSbPill("falha de conexão", "b-bad");
-        setLog("Falha ao conectar no Supabase.\nDetalhe: " + (e?.message || e));
+        setSbPill("erro no client", "b-bad");
+        setLog("ERRO criando client: " + (e?.message || e));
       }
     }
 
     async function buscar() {
+      if (!sb) {
+        setLog("Ainda não conectou no Supabase. Veja o status acima.");
+        return;
+      }
+
       const input = document.getElementById("tagInput");
       const tag = cleanTag(input?.value);
 
@@ -338,36 +491,37 @@
         return;
       }
 
+      lastTag = tag;
       clearOutputs();
       setLog("Buscando: " + tag + " …");
 
-      const url =
-        `${SUPABASE_URL}/rest/v1/spools` +
-        `?select=nome_spool,status,localizacao,responsavel,atualizado_em` +
-        `&nome_spool=eq.${encodeURIComponent(tag)}` +
-        `&limit=1`;
-
       try {
-        const res = await fetch(url, {
-          method: "GET",
-          headers: {
-            apikey: SUPABASE_APIKEY,
-            Authorization: `Bearer ${SUPABASE_APIKEY}`,
-            Accept: "application/json"
-          }
-        });
+        const { data, error } = await sb
+          .from("spools")
+          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
+          .eq("nome_spool", tag)
+          .limit(1);
 
-        const text = await res.text();
-
-        if (!res.ok) {
-          setLog("Erro buscando no banco.\n\nHTTP " + res.status + "\n" + text);
+        if (error) {
+          setLog(
+            "Erro buscando no banco.\n\n" +
+            JSON.stringify(
+              {
+                message: error.message,
+                details: error.details || "",
+                hint: error.hint || "",
+                code: error.code || ""
+              },
+              null,
+              2
+            )
+          );
           return;
         }
 
-        const data = JSON.parse(text);
-
         if (!data || data.length === 0) {
           setLog("Não achei esse TAG no banco: " + tag);
+          setOut("outNome", tag);
           setOut("outStatus", "NÃO ENCONTRADO");
           return;
         }
@@ -375,33 +529,147 @@
         const row = data[0];
         setLog("Encontrado ✅");
 
+        setOut("outNome", row.nome_spool);
         setOut("outStatus", row.status);
         setOut("outLocalizacao", row.localizacao);
         setOut("outResponsavel", row.responsavel);
         setOut("outAtualizado", row.atualizado_em);
 
       } catch (e) {
-        setLog("Falha geral.\nDetalhe: " + (e?.message || e));
+        setLog(
+          "Falha geral.\n" +
+          "Detalhe: " + (e?.message || e)
+        );
+      }
+    }
+
+    async function atualizar() {
+      if (!sb) {
+        setLog("Ainda não conectou no Supabase. Veja o status acima.");
+        return;
+      }
+
+      const tagInput = document.getElementById("tagInput");
+      const tag = cleanTag(tagInput?.value) || lastTag;
+
+      if (!tag) {
+        setLog("Primeiro BUSQUE um TAG (ou cole o TAG) para depois atualizar.");
+        return;
+      }
+
+      const inStatus = document.getElementById("inStatus");
+      const inLocalizacao = document.getElementById("inLocalizacao");
+      const inResponsavel = document.getElementById("inResponsavel");
+
+      const novoStatus = cleanFree(inStatus?.value);
+      const novaLocalizacao = cleanFree(inLocalizacao?.value);
+      const novoResponsavel = cleanFree(inResponsavel?.value);
+
+      // Monta payload só com campos preenchidos
+      const payload = {};
+      if (novoStatus) payload.status = novoStatus;
+      if (novaLocalizacao) payload.localizacao = novaLocalizacao;
+      if (novoResponsavel) payload.responsavel = novoResponsavel;
+
+      // Se nada foi informado, não faz nada
+      if (Object.keys(payload).length === 0) {
+        setLog("Nada para atualizar. Preencha pelo menos 1 campo (status/localização/responsável).");
+        return;
+      }
+
+      // Sempre atualiza timestamp se existir no schema
+      payload.atualizado_em = nowIso();
+
+      setLog(
+        "Atualizando: " + tag + "\n" +
+        "Campos: " + JSON.stringify(payload, null, 0)
+      );
+
+      try {
+        const { data, error } = await sb
+          .from("spools")
+          .update(payload)
+          .eq("nome_spool", tag)
+          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
+          .limit(1);
+
+        if (error) {
+          setLog(
+            "Erro ao atualizar.\n\n" +
+            JSON.stringify(
+              {
+                message: error.message,
+                details: error.details || "",
+                hint: error.hint || "",
+                code: error.code || ""
+              },
+              null,
+              2
+            )
+          );
+          return;
+        }
+
+        if (!data || data.length === 0) {
+          setLog(
+            "Atualização enviada, mas não retornou linha.\n" +
+            "Possível causa: RLS bloqueando SELECT/RETURNING.\n" +
+            "Tente BUSCAR novamente."
+          );
+          return;
+        }
+
+        const row = data[0];
+        setLog("Atualizado ✅");
+
+        // Atualiza painel
+        setOut("outNome", row.nome_spool);
+        setOut("outStatus", row.status);
+        setOut("outLocalizacao", row.localizacao);
+        setOut("outResponsavel", row.responsavel);
+        setOut("outAtualizado", row.atualizado_em);
+
+      } catch (e) {
+        setLog(
+          "Falha geral na atualização.\n" +
+          "Detalhe: " + (e?.message || e)
+        );
       }
     }
 
     function limpar() {
       const input = document.getElementById("tagInput");
       if (input) input.value = "";
+      lastTag = "";
       clearOutputs();
       setLog("Limpo. Cole um TAG e clique BUSCAR.");
     }
 
+    function limparAtualizacao() {
+      const inStatus = document.getElementById("inStatus");
+      const inLocalizacao = document.getElementById("inLocalizacao");
+      const inResponsavel = document.getElementById("inResponsavel");
+      if (inStatus) inStatus.value = "";
+      if (inLocalizacao) inLocalizacao.value = "";
+      if (inResponsavel) inResponsavel.value = "";
+      setLog("Campos de atualização limpos. (Nada foi enviado)");
+    }
+
     window.addEventListener("load", () => {
-      testConnection();
+      init();
 
       const btnBuscar = document.getElementById("btnBuscar");
       const btnLimpar = document.getElementById("btnLimpar");
+      const btnAtualizar = document.getElementById("btnAtualizar");
+      const btnLimparAtualizacao = document.getElementById("btnLimparAtualizacao");
       const input = document.getElementById("tagInput");
 
       if (btnBuscar) btnBuscar.addEventListener("click", buscar);
       if (btnLimpar) btnLimpar.addEventListener("click", limpar);
+      if (btnAtualizar) btnAtualizar.addEventListener("click", atualizar);
+      if (btnLimparAtualizacao) btnLimparAtualizacao.addEventListener("click", limparAtualizacao);
 
+      // Enter também busca
       if (input) {
         input.addEventListener("keydown", (ev) => {
           if (ev.key === "Enter") buscar();
