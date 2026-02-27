@@ -5,9 +5,8 @@
   <title>Rastreamento de SPOOL</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- ÍCONE (ajuste o nome se o seu for icone.PNG) -->
-  <link rel="icon" href="icone.PNG?v=3" />
-  <link rel="apple-touch-icon" href="icone.PNG?v=3" />
+  <link rel="icon" href="icone.PNG?v=5" />
+  <link rel="apple-touch-icon" href="icone.PNG?v=5" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -71,7 +70,7 @@
     .row > *{flex:1;min-width:160px}
     .bigInput{
       font-size:20px;
-      padding:20px;
+      padding:22px;
       text-align:center;
       letter-spacing:.6px;
     }
@@ -100,6 +99,7 @@
       bottom:14px;background:#111a2b;border:1px solid #2b3a5f;
       padding:10px 12px;border-radius:12px;color:#fff;
       max-width:92vw;display:none;
+      z-index:9999;
     }
   </style>
 
@@ -208,10 +208,10 @@
 
 <script>
   // =========================
-  // CONFIG (TROQUE AQUI)
+  // CONFIG (JÁ PREENCHIDO)
   // =========================
-  const SUPABASE_URL = "COLE_AQUI_SUA_URL";
-  const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_KEY";
+  const SUPABASE_URL = "https://tilpzusjfgxueieisws.supabase.co";
+  const SUPABASE_ANON_KEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
 
   // =========================
   // CONSTANTES DE FLUXO
@@ -223,7 +223,7 @@
   // ESTADO
   // =========================
   let supa = null;
-  let spoolAtual = null; // registro da tabela spools
+  let spoolAtual = null;
   let canalRealtime = null;
 
   // =========================
@@ -282,10 +282,10 @@
     try{
       supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
       el("conn").textContent = "Supabase conectado";
-      el("conn").style.borderColor = "#2b3a5f";
     }catch(e){
-      el("conn").textContent = "Erro no Supabase JS";
+      el("conn").textContent = "Erro no Supabase";
       setLog("Erro iniciando Supabase. Confira URL/KEY.", {erro: String(e)});
+      return;
     }
 
     // preparar select de etapas
@@ -297,14 +297,13 @@
       sel.appendChild(opt);
     }
 
-    // mostrar/ocultar motivo bloqueio
     el("selStatus").addEventListener("change", ()=>{
       el("boxBloq").style.display = (el("selStatus").value === "BLOQUEADO") ? "block" : "none";
     });
   }
 
   // =========================
-  // BUSCA (Tela 1 -> Tela 2)
+  // BUSCA
   // =========================
   async function buscarSpool(){
     try{
@@ -322,20 +321,18 @@
         .limit(1);
 
       if(error){
-        setLog("Erro buscando no banco (RLS/policy/colunas).", error);
+        setLog("Erro buscando no banco (provável RLS/policy).", error);
         return;
       }
 
       if(!data || data.length === 0){
-        setLog("SPOOL não encontrado. (Se era pra existir, confirme se o TAG está idêntico.)");
+        setLog("SPOOL não encontrado. Confirme se o TAG está idêntico.");
         return;
       }
 
       spoolAtual = data[0];
       montarTelaDetalhe();
       showDetalhe();
-
-      // realtime: ouvir alterações desse SPOOL
       iniciarRealtime(spoolAtual.nome_spool);
 
     }catch(e){
@@ -345,7 +342,7 @@
   window.buscarSpool = buscarSpool;
 
   // =========================
-  // MONTAR DETALHE
+  // DETALHE
   // =========================
   function montarTelaDetalhe(){
     const s = spoolAtual;
@@ -397,9 +394,10 @@
       setLog("Falha recarregando.", {erro: String(e)});
     }
   }
+  window.recarregar = recarregar;
 
   // =========================
-  // REGRAS + AÇÕES
+  // REGRAS
   // =========================
   function idxEtapa(etapa){
     const i = ETAPAS.indexOf(etapa);
@@ -411,9 +409,8 @@
     return (i < ETAPAS.length - 1) ? ETAPAS[i+1] : null;
   }
 
-  function validarLocal(etapa, status, local){
+  function validarLocal(etapa, local){
     if(isLogistica(etapa)){
-      // na logística, sempre exigir localização quando estiver com o setor (pendente) ou quando salvar qualquer coisa
       if(!local || !local.trim()){
         return "Na Logística, LOCALIZAÇÃO é obrigatória.";
       }
@@ -428,6 +425,9 @@
     return null;
   }
 
+  // =========================
+  // AÇÕES
+  // =========================
   async function salvarStatus(){
     if(!spoolAtual) return;
     try{
@@ -437,7 +437,7 @@
       const motivo = el("inpMotivo").value;
       const usuario = el("inpUsuario").value.trim() || "—";
 
-      const e1 = validarLocal(etapa, status, local);
+      const e1 = validarLocal(etapa, local);
       if(e1){ toast(e1); return; }
 
       const e2 = validarBloqueio(status, motivo);
@@ -464,7 +464,6 @@
         return;
       }
 
-      // histórico imutável
       await inserirHistorico({
         spool_id: spoolAtual.id,
         nome_spool: spoolAtual.nome_spool,
@@ -492,7 +491,6 @@
       const etapaAtual = spoolAtual.etapa || "Fabricação";
       const statusAtual = spoolAtual.status || "PENDENTE";
 
-      // regra: só avança se estiver LIBERADO
       if(statusAtual !== "LIBERADO"){
         toast("Para avançar, o status atual precisa estar LIBERADO.");
         return;
@@ -506,7 +504,6 @@
 
       const usuario = el("inpUsuario").value.trim() || "—";
 
-      // ao avançar: entra na próxima etapa como PENDENTE
       const patch = {
         etapa: next,
         status: "PENDENTE",
@@ -516,8 +513,7 @@
         atualizado_em: new Date().toISOString()
       };
 
-      // se for logística, exige localização
-      const e1 = validarLocal(next, "PENDENTE", patch.localizacao || "");
+      const e1 = validarLocal(next, patch.localizacao || "");
       if(e1){ toast(e1); return; }
 
       const { data, error } = await supa
@@ -533,7 +529,6 @@
         return;
       }
 
-      // histórico: registrar a transição
       await inserirHistorico({
         spool_id: spoolAtual.id,
         nome_spool: spoolAtual.nome_spool,
@@ -563,10 +558,8 @@
       const { error } = await supa
         .from("historico_atualizacoes")
         .insert([payload]);
-
       if(error){
-        // não quebra o app, mas mostra
-        setLog("Atenção: não conseguiu gravar histórico (verifique se a tabela existe).", error);
+        setLog("Atenção: não conseguiu gravar histórico (verifique RLS na tabela historico_atualizacoes).", error);
       }
     }catch(e){
       setLog("Erro gravando histórico.", {erro: String(e)});
@@ -584,7 +577,7 @@
         .limit(15);
 
       if(error){
-        el("hist").textContent = "Erro carregando histórico. (Confira se a tabela historico_atualizacoes existe.)\n\n" + JSON.stringify(error, null, 2);
+        el("hist").textContent = "Erro carregando histórico.\n\n" + JSON.stringify(error, null, 2);
         return;
       }
 
@@ -607,7 +600,7 @@
   }
 
   // =========================
-  // REALTIME (AO VIVO)
+  // REALTIME
   // =========================
   function pararRealtime(){
     try{
@@ -630,24 +623,18 @@
           table: "spools",
           filter: `nome_spool=eq.${nomeSpool}`
         }, (payload) => {
-          // payload.new tem o registro atualizado
           spoolAtual = payload.new;
           montarTelaDetalhe();
           toast(`Atualizado: ${spoolAtual.status} / ${spoolAtual.etapa}`);
         })
-        .subscribe((status) => {
-          // ok
-        });
+        .subscribe();
     }catch(e){
-      setLog("Realtime não iniciou. (Sem crise, o app ainda funciona.)", {erro: String(e)});
+      setLog("Realtime não iniciou (sem crise).", {erro: String(e)});
     }
   }
 
-  // =========================
   // START
-  // =========================
   init();
 </script>
-
 </body>
 </html>
