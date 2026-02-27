@@ -3,207 +3,230 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de S-B-O-O-L</title>
+  <title>Rastreamento de SPOOL</title>
 
-  <!-- Ícones (iPhone usa MUITO o apple-touch-icon) -->
-  <link rel="icon" href="icone.PNG" />
-  <link rel="apple-touch-icon" href="icone.PNG" />
-
-  <!-- Supabase JS (UMD estável pra browser) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <!-- Ícones (use o mesmo nome do arquivo que está no repo) -->
+  <link rel="icon" href="icon.PNG?v=1">
+  <link rel="apple-touch-icon" href="icon.PNG?v=1">
 
   <style>
     :root{
-      --bg: #070b18;
-      --card: rgba(255,255,255,0.06);
-      --card2: rgba(255,255,255,0.04);
-      --border: rgba(255,255,255,0.10);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.65);
-      --blue: #3b82f6;
-      --blue2: #2563eb;
-      --danger: #ef4444;
-      --ok: #22c55e;
+      --bg1:#0a1224;
+      --bg2:#0e1c3a;
+      --card:#0e1a33cc;
+      --stroke:#2b3a66;
+      --text:#e9eefc;
+      --muted:#aab6d8;
+      --blue:#3a6cff;
+      --blue2:#274edb;
+      --btn:#2c56ff;
+      --btn2:#1f3fb6;
+      --danger:#ff4d4d;
+      --ok:#22c55e;
+      --warn:#fbbf24;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, Helvetica, sans-serif;
     }
 
-    *{ box-sizing: border-box; }
+    *{box-sizing:border-box}
     body{
-      margin: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: radial-gradient(1200px 600px at 50% 0%, rgba(59,130,246,0.18), transparent 60%),
-                  radial-gradient(900px 500px at 80% 20%, rgba(34,197,94,0.10), transparent 55%),
-                  var(--bg);
+      margin:0;
+      min-height:100vh;
+      font-family: var(--sans);
       color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 22px;
+      background:
+        radial-gradient(1200px 700px at 20% 10%, #1a2b60 0%, transparent 55%),
+        radial-gradient(900px 600px at 80% 20%, #153d7a 0%, transparent 55%),
+        linear-gradient(160deg, var(--bg1), var(--bg2));
+      display:flex;
+      justify-content:center;
+      padding:26px 14px;
     }
 
     .wrap{
-      width: 100%;
-      max-width: 860px;
+      width:min(820px, 100%);
     }
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.03));
-      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(17,28,56,.85), rgba(10,18,36,.85));
+      border: 1px solid rgba(43,58,102,.75);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
       border-radius: 22px;
-      padding: 22px;
-      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      padding: 22px 18px;
+      backdrop-filter: blur(8px);
     }
 
     h1{
-      margin: 0 0 10px;
-      letter-spacing: 1px;
-      font-size: 32px;
-      font-weight: 900;
+      margin: 4px 0 8px;
+      font-size: clamp(26px, 4vw, 40px);
+      letter-spacing: .08em;
       text-transform: uppercase;
-      text-align: center;
+      text-align:center;
+      font-weight: 900;
     }
 
-    .subtitle{
-      text-align: center;
+    .sub{
+      text-align:center;
       color: var(--muted);
-      margin-bottom: 18px;
-      font-weight: 600;
+      margin: 0 0 18px;
+      font-size: 15px;
     }
 
-    .statusline{
+    .pillrow{
       display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 10px 0 16px;
-      color: var(--muted);
-      font-size: 13px;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-bottom: 14px;
     }
 
     .pill{
-      padding: 8px 10px;
+      border: 1px solid rgba(43,58,102,.75);
+      background: rgba(8,14,28,.55);
+      padding: 10px 12px;
       border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 100%;
     }
+
+    .pill b{ color: var(--text); }
 
     label{
       display:block;
-      margin: 10px 0 8px;
-      font-weight: 800;
-      letter-spacing: .4px;
-      color: rgba(255,255,255,0.85);
-      text-transform: uppercase;
-      font-size: 13px;
+      margin: 14px 0 8px;
+      color: var(--muted);
+      font-weight: 700;
+      letter-spacing: .02em;
     }
 
-    /* INPUT GRANDÃO */
-    input{
-      width: 100%;
-      padding: 22px 18px;
-      font-size: 26px;
-      font-weight: 800;
-      letter-spacing: 1px;
+    .inputBig{
+      width:100%;
       border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(0,0,0,0.20);
+      border: 1px solid rgba(43,58,102,.9);
+      background: rgba(6,10,20,.55);
       color: var(--text);
-      outline: none;
+      padding: 18px 16px;
+      font-size: clamp(18px, 3.8vw, 26px);
+      font-family: var(--mono);
+      outline:none;
+      text-align:center;
+      letter-spacing: .06em;
       text-transform: uppercase;
     }
-    input::placeholder{
-      color: rgba(255,255,255,0.35);
-      font-weight: 700;
+    .inputBig::placeholder{
+      color: rgba(170,182,216,.55);
+      letter-spacing: .08em;
     }
 
     .btnrow{
       display:flex;
-      gap: 12px;
+      gap:14px;
       margin-top: 14px;
-      flex-wrap: wrap;
+      flex-wrap:wrap;
     }
 
     button{
-      border: 0;
+      flex: 1 1 220px;
+      border: none;
       border-radius: 18px;
-      padding: 16px 18px;
-      font-weight: 900;
+      padding: 18px 14px;
       font-size: 22px;
-      cursor: pointer;
-      flex: 1;
-      min-width: 160px;
-      letter-spacing: 1px;
+      font-weight: 900;
+      letter-spacing: .08em;
       text-transform: uppercase;
-    }
-
-    .btn-primary{
-      background: linear-gradient(180deg, var(--blue), var(--blue2));
       color: white;
-      box-shadow: 0 18px 35px rgba(37,99,235,0.28);
+      cursor:pointer;
+      box-shadow: 0 18px 40px rgba(0,0,0,.25);
+      transition: transform .06s ease, filter .12s ease;
     }
-    .btn-ghost{
-      background: rgba(255,255,255,0.06);
-      color: rgba(255,255,255,0.90);
-      border: 1px solid var(--border);
+    button:active{ transform: translateY(1px); }
+    .btnSearch{
+      background: linear-gradient(180deg, var(--btn), var(--btn2));
+    }
+    .btnClear{
+      background: linear-gradient(180deg, rgba(30,41,76,.9), rgba(14,20,42,.9));
+      border: 1px solid rgba(43,58,102,.9);
+      box-shadow: none;
     }
 
-    .panel{
-      margin-top: 16px;
+    .section{
+      margin-top: 18px;
       border-radius: 18px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(43,58,102,.75);
+      background: rgba(7,12,26,.35);
       padding: 14px;
     }
 
-    .panel h3{
-      margin: 0 0 10px;
-      font-size: 14px;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.80);
+    .sectionTitle{
+      margin:0 0 10px;
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: .02em;
     }
 
     pre{
-      margin: 0;
+      margin:0;
       white-space: pre-wrap;
       word-break: break-word;
-      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-family: var(--mono);
       font-size: 14px;
-      color: rgba(255,255,255,0.90);
-      background: rgba(0,0,0,0.25);
-      border: 1px dashed rgba(255,255,255,0.18);
-      border-radius: 14px;
+      line-height: 1.35;
       padding: 12px;
-      min-height: 70px;
+      border-radius: 14px;
+      border: 1px dashed rgba(43,58,102,.75);
+      background: rgba(4,8,16,.45);
+      color: #d7e3ff;
     }
 
-    .result{
+    .grid{
       display:grid;
       grid-template-columns: 1fr;
-      gap: 10px;
+      gap:10px;
+      margin-top: 10px;
     }
 
     .kv{
       display:flex;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 12px;
-      border: 1px solid var(--border);
+      justify-content:space-between;
+      gap:12px;
+      align-items:center;
+      padding: 12px 12px;
       border-radius: 14px;
-      background: rgba(255,255,255,0.04);
-      flex-wrap: wrap;
+      border: 1px solid rgba(43,58,102,.55);
+      background: rgba(6,10,20,.35);
     }
-    .k{ color: var(--muted); font-weight: 800; text-transform: uppercase; font-size: 12px; letter-spacing: .4px; }
-    .v{ color: var(--text); font-weight: 900; font-size: 14px; }
-
-    .tagok{ color: var(--ok); font-weight: 900; }
-    .tagerr{ color: var(--danger); font-weight: 900; }
-
-    .smallnote{
-      margin-top: 10px;
-      color: rgba(255,255,255,0.55);
+    .k{
+      color: var(--muted);
+      font-weight: 800;
+      letter-spacing: .02em;
+      text-transform: uppercase;
       font-size: 12px;
-      line-height: 1.4;
+    }
+    .v{
+      font-family: var(--mono);
+      font-size: 14px;
+      text-align:right;
+    }
+
+    .badge{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+    }
+    .b-ok{ background: rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.35); color: #b7f7cd; }
+    .b-warn{ background: rgba(251,191,36,.18); border:1px solid rgba(251,191,36,.35); color: #ffe6a6; }
+    .b-bad{ background: rgba(255,77,77,.18); border:1px solid rgba(255,77,77,.35); color: #ffb5b5; }
+
+    .foot{
+      margin-top:12px;
+      text-align:center;
+      color: rgba(170,182,216,.6);
+      font-size: 12px;
     }
   </style>
 </head>
@@ -211,181 +234,245 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>RASTREAMENTO DE S-B-O-O-L</h1>
-      <div class="subtitle">Cole o TAG do S-B-O-O-L e pesquise. Atualiza e todo mundo vê.</div>
+      <h1>RASTREAMENTO DE SPOOL</h1>
+      <p class="sub">Cole o TAG do SPOOL e pesquise. Atualiza e todo mundo vê.</p>
 
-      <div class="statusline">
-        <div class="pill" id="connPill">Supabase: <strong>iniciando...</strong></div>
-        <div class="pill">Tabela: <strong>public.spools</strong> / Coluna: <strong>nome_spool</strong></div>
+      <div class="pillrow">
+        <div class="pill" id="sbStatus"><b>Supabase:</b> iniciando...</div>
+        <div class="pill"><b>Tabela:</b> public.spools / <b>Coluna:</b> nome_spool</div>
       </div>
 
-      <label for="tag">TAG do S-B-O-O-L</label>
-      <input id="tag" placeholder="EX: IS-M01-BG-B10-0018-001-010" autocomplete="off" />
+      <label for="tagInput">TAG do SPOOL</label>
+      <input
+        id="tagInput"
+        class="inputBig"
+        placeholder="EX: IS-M01-BG-B10-0018-001-007"
+        autocomplete="off"
+        autocapitalize="characters"
+        spellcheck="false"
+      />
 
       <div class="btnrow">
-        <button class="btn-primary" onclick="buscar()">BUSCAR</button>
-        <button class="btn-ghost" onclick="limpar()">LIMPAR</button>
+        <button class="btnSearch" id="btnBuscar">BUSCAR</button>
+        <button class="btnClear" id="btnLimpar">LIMPAR</button>
       </div>
 
-      <div class="panel">
-        <h3>Resultado</h3>
-        <div class="result" id="resultado">
-          <div class="kv"><div class="k">Status</div><div class="v">Aguardando busca…</div></div>
+      <div class="section">
+        <div class="sectionTitle">Log / Erros (aparece aqui, nada fica escondido)</div>
+        <pre id="logBox">Aguardando…</pre>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Resultado</div>
+        <div class="grid">
+          <div class="kv">
+            <div class="k">Status</div>
+            <div class="v" id="outStatus">—</div>
+          </div>
+          <div class="kv">
+            <div class="k">Localização</div>
+            <div class="v" id="outLocalizacao">—</div>
+          </div>
+          <div class="kv">
+            <div class="k">Responsável</div>
+            <div class="v" id="outResponsavel">—</div>
+          </div>
+          <div class="kv">
+            <div class="k">Atualizado em</div>
+            <div class="v" id="outAtualizado">—</div>
+          </div>
         </div>
       </div>
 
-      <div class="panel">
-        <h3>Log / Erros (aparece aqui, nada fica escondido)</h3>
-        <pre id="log"></pre>
-        <div class="smallnote">
-          Se aparecer “Load failed”, é quase sempre: RLS/Policy/Grants ou bloqueio de request (CORS/preflight).
-          Pra testar rápido: no Supabase → Policies → tabela <b>spools</b> → <b>Disable RLS</b>.
-        </div>
-      </div>
+      <div class="foot">Se der erro, o log acima mostra exatamente o motivo.</div>
     </div>
   </div>
 
+  <!-- 1) Carrega supabase-js (CDN 1). Se falhar, tenta CDN 2 automaticamente. -->
   <script>
+    function setLog(msg) {
+      const el = document.getElementById("logBox");
+      if (el) el.textContent = msg;
+    }
+    function setSbPill(text, kind) {
+      const pill = document.getElementById("sbStatus");
+      if (!pill) return;
+      pill.innerHTML = "<b>Supabase:</b> " + text;
+      pill.classList.remove("b-ok","b-warn","b-bad");
+      if (kind) pill.classList.add(kind);
+    }
+
+    function loadScript(src) {
+      return new Promise((resolve, reject) => {
+        const s = document.createElement("script");
+        s.src = src;
+        s.async = true;
+        s.onload = resolve;
+        s.onerror = reject;
+        document.head.appendChild(s);
+      });
+    }
+
+    async function ensureSupabaseLib() {
+      setSbPill("carregando biblioteca…", "b-warn");
+      try {
+        await loadScript("https://unpkg.com/@supabase/supabase-js@2");
+        if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
+        return true;
+      } catch (e1) {
+        try {
+          await loadScript("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2");
+          if (!window.supabase) throw new Error("Biblioteca carregou mas window.supabase não existe.");
+          return true;
+        } catch (e2) {
+          setSbPill("falhou carregar biblioteca", "b-bad");
+          setLog(
+            "ERRO: não consegui carregar supabase-js.\n" +
+            "CDN1 (unpkg) falhou e CDN2 (jsdelivr) falhou.\n" +
+            "Isso é rede/bloqueio do Safari.\n\n" +
+            "Detalhe 1: " + (e1?.message || e1) + "\n" +
+            "Detalhe 2: " + (e2?.message || e2)
+          );
+          return false;
+        }
+      }
+    }
+  </script>
+
+  <!-- 2) App -->
+  <script>
+    // ✅ SUAS CREDENCIAIS (do jeito que você mandou)
     const SUPABASE_URL = "https://tilpzusjfgxueieisws.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
 
-    let supabase = null;
+    let sb = null;
 
-    const $ = (id) => document.getElementById(id);
-
-    function log(msg, obj = null) {
-      const stamp = new Date().toLocaleString();
-      let line = `[${stamp}] ${msg}`;
-      if (obj) {
-        try { line += "\n" + JSON.stringify(obj, null, 2); }
-        catch(e){ line += "\n" + String(obj); }
-      }
-      $("log").textContent = line + "\n\n" + $("log").textContent;
+    function cleanTag(raw) {
+      return (raw || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, ""); // remove espaços
     }
 
-    function setConn(ok, text) {
-      $("connPill").innerHTML = `Supabase: <strong class="${ok ? "tagok" : "tagerr"}">${text}</strong>`;
+    function setOut(id, val) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
     }
 
-    function renderResultado(spool, historico = []) {
-      const wrap = $("resultado");
-      wrap.innerHTML = "";
-
-      if (!spool) {
-        wrap.innerHTML = `<div class="kv"><div class="k">Status</div><div class="v">Não encontrado</div></div>`;
-        return;
-      }
-
-      const fields = [
-        ["nome_spool", spool.nome_spool],
-        ["localizacao", spool.localizacao],
-        ["status", spool.status],
-        ["responsavel", spool.responsavel],
-        ["atualizado_em", spool.atualizado_em],
-      ];
-
-      fields.forEach(([k,v]) => {
-        const safeV = (v === null || v === undefined || v === "") ? "—" : String(v);
-        const div = document.createElement("div");
-        div.className = "kv";
-        div.innerHTML = `<div class="k">${k}</div><div class="v">${safeV}</div>`;
-        wrap.appendChild(div);
-      });
-
-      if (historico && historico.length) {
-        const h = document.createElement("div");
-        h.className = "kv";
-        h.innerHTML = `<div class="k">histórico (últimos)</div><div class="v">${historico.length} linhas</div>`;
-        wrap.appendChild(h);
-
-        const pre = document.createElement("pre");
-        pre.style.marginTop = "10px";
-        pre.textContent = historico
-          .slice(0, 10)
-          .map(x => `${x.created_at || ""} | ${x.acao || x.status || ""} | ${x.setor || x.localizacao || ""} | ${x.responsavel || ""}`)
-          .join("\n");
-        wrap.appendChild(pre);
-      }
+    function clearOutputs() {
+      setOut("outStatus", "—");
+      setOut("outLocalizacao", "—");
+      setOut("outResponsavel", "—");
+      setOut("outAtualizado", "—");
     }
 
     async function init() {
+      const ok = await ensureSupabaseLib();
+      if (!ok) return;
+
       try {
-        if (!SUPABASE_URL.startsWith("http")) {
-          setConn(false, "URL inválida");
-          log("SUPABASE_URL inválida (precisa começar com http/https).", { SUPABASE_URL });
-          return;
-        }
-        supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        setConn(true, "conectado");
-        log("Supabase iniciado com sucesso.");
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        setSbPill("conectado ✅", "b-ok");
+        setLog("Pronto. Cole um TAG e clique BUSCAR.");
       } catch (e) {
-        setConn(false, "erro");
-        log("Erro iniciando Supabase. Confira URL/KEY.", { error: String(e) });
+        setSbPill("erro no client", "b-bad");
+        setLog("ERRO criando client: " + (e?.message || e));
       }
     }
 
     async function buscar() {
-      const tag = $("tag").value.trim().toUpperCase();
-      if (!tag) {
-        log("Você clicou buscar sem TAG.");
-        renderResultado(null);
+      if (!sb) {
+        setLog("Ainda não conectou no Supabase. Veja o status acima.");
         return;
       }
 
-      log("Buscando TAG no banco…", { tag });
+      const input = document.getElementById("tagInput");
+      const tag = cleanTag(input?.value);
+
+      if (!tag) {
+        setLog("Cole um TAG válido primeiro.");
+        return;
+      }
+
+      clearOutputs();
+      setLog("Buscando: " + tag + " …");
 
       try {
-        // 1) Busca o S-B-O-O-L
-        const { data: spool, error } = await supabase
+        const { data, error } = await sb
           .from("spools")
-          .select("*")
+          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
           .eq("nome_spool", tag)
-          .maybeSingle();
+          .limit(1);
 
         if (error) {
-          log("Erro buscando no banco (possível RLS/Policy/Grants).", error);
-          renderResultado(null);
+          // Aqui aparece 401/403/Policy etc
+          setLog(
+            "Erro buscando no banco.\n\n" +
+            JSON.stringify(
+              {
+                message: error.message,
+                details: error.details || "",
+                hint: error.hint || "",
+                code: error.code || ""
+              },
+              null,
+              2
+            )
+          );
           return;
         }
 
-        if (!spool) {
-          log("TAG não encontrada.");
-          renderResultado(null);
+        if (!data || data.length === 0) {
+          setLog("Não achei esse TAG no banco: " + tag);
+          setOut("outStatus", "NÃO ENCONTRADO");
           return;
         }
 
-        // 2) Tenta puxar histórico (se existir tabela)
-        let historico = [];
-        try {
-          const { data: hist, error: errHist } = await supabase
-            .from("historico_atualizacoes")
-            .select("*")
-            .eq("nome_spool", tag)
-            .order("created_at", { ascending: false })
-            .limit(20);
+        const row = data[0];
+        setLog("Encontrado ✅");
 
-          if (!errHist && Array.isArray(hist)) historico = hist;
-        } catch (_) {
-          // se não existir, ignora
-        }
-
-        log("OK. Encontrado.");
-        renderResultado(spool, historico);
+        setOut("outStatus", row.status);
+        setOut("outLocalizacao", row.localizacao);
+        setOut("outResponsavel", row.responsavel);
+        setOut("outAtualizado", row.atualizado_em);
 
       } catch (e) {
-        // Aqui cai o famoso "TypeError: Load failed"
-        log("Falha de rede/request (Load failed). Quase sempre é bloqueio de request ou RLS/Policy/Grants.", { message: String(e) });
+        // “TypeError: Load failed” vem aqui (rede / bloqueio / CORS / etc.)
+        setLog(
+          "Falha geral (rede/bloqueio).\n" +
+          "Detalhe: " + (e?.message || e) + "\n\n" +
+          "Se isso acontecer no Safari, normalmente é:\n" +
+          "- CDN bloqueado\n" +
+          "- rede oscilando\n" +
+          "- tentativa de fetch falhando"
+        );
       }
     }
 
     function limpar() {
-      $("tag").value = "";
-      $("log").textContent = "";
-      $("resultado").innerHTML = `<div class="kv"><div class="k">Status</div><div class="v">Aguardando busca…</div></div>`;
-      log("Tela limpa.");
+      const input = document.getElementById("tagInput");
+      if (input) input.value = "";
+      clearOutputs();
+      setLog("Limpo. Cole um TAG e clique BUSCAR.");
     }
 
-    init();
+    window.addEventListener("load", () => {
+      init();
+
+      const btnBuscar = document.getElementById("btnBuscar");
+      const btnLimpar = document.getElementById("btnLimpar");
+      const input = document.getElementById("tagInput");
+
+      if (btnBuscar) btnBuscar.addEventListener("click", buscar);
+      if (btnLimpar) btnLimpar.addEventListener("click", limpar);
+
+      // Enter também busca
+      if (input) {
+        input.addEventListener("keydown", (ev) => {
+          if (ev.key === "Enter") buscar();
+        });
+      }
+    });
   </script>
 </body>
 </html>
