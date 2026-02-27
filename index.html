@@ -4,9 +4,55 @@
   <meta charset="UTF-8">
   <title>Spool Tracker</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+    const SUPABASE_URL = "COLE_AQUI_SUA_URL_SUPABASE";
+    const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_KEY";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function inserirSpool() {
+      const nome = document.getElementById("nome").value;
+
+      const { data, error } = await supabase
+        .from("spools")
+        .insert([{ nome_spool: nome }])
+        .select();
+
+      if (error) {
+        alert("Erro: " + error.message);
+      } else {
+        alert("Inserido com sucesso!");
+        listarSpools();
+      }
+    }
+
+    async function listarSpools() {
+      const { data, error } = await supabase
+        .from("spools")
+        .select("*")
+        .order("id", { ascending: false });
+
+      if (!error) {
+        document.getElementById("lista").innerText =
+          JSON.stringify(data, null, 2);
+      }
+    }
+
+    window.onload = listarSpools;
+  </script>
 </head>
-<body style="background:#0b1220;color:white;font-family:sans-serif;text-align:center;padding:40px;">
+
+<body style="background:#0b1220;color:white;font-family:sans-serif;padding:20px">
+
   <h1>Spool Tracker</h1>
-  <p>App rodando via GitHub Pages</p>
+
+  <input id="nome" placeholder="Nome do spool" />
+  <button onclick="inserirSpool()">Inserir</button>
+
+  <pre id="lista"></pre>
+
 </body>
 </html>
