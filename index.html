@@ -1,61 +1,653 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Spool Tracker</title>
-  <link rel="icon" href="icone.PNG">
-<link rel="apple-touch-icon" href="icone.PNG">
-<meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <title>Rastreamento de SPOOL</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- ÍCONE (ajuste o nome se o seu for icone.PNG) -->
+  <link rel="icon" href="icone.PNG?v=3" />
+  <link rel="apple-touch-icon" href="icone.PNG?v=3" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#121a2b;
+      --line:#24304d;
+      --muted:#9bb0d1;
+      --text:#e7eefc;
+      --primary:#2f7cf6;
+      --good:#36d399;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:-apple-system, system-ui, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+    .wrap{max-width:820px;margin:0 auto;padding:16px}
+    .topbar{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .pill{font-size:12px;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px}
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:14px;
+      margin:12px 0;
+    }
+    h1{margin:10px 0 8px;font-size:22px}
+    h2{margin:0 0 10px;font-size:16px;color:var(--muted)}
+    label{display:block;font-size:12px;color:var(--muted);margin:8px 0 6px}
+    input, select, button, textarea{
+      width:100%;
+      padding:14px;
+      font-size:16px;
+      border-radius:12px;
+      border:1px solid #2b3a5f;
+      background:#0d1526;
+      color:#fff;
+      outline:none;
+    }
+    textarea{min-height:92px;resize:vertical}
+    button{
+      background:var(--primary);
+      border:none;
+      font-weight:800;
+      letter-spacing:.4px;
+      cursor:pointer;
+    }
+    button.secondary{background:#1f2b45;border:1px solid #2b3a5f}
+    button.good{background:var(--good);color:#062016}
+    button.warn{background:var(--warn);color:#2b1b00}
+    button.bad{background:var(--bad);color:#2b0b14}
+    button:active{transform:scale(.99)}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    .row > *{flex:1;min-width:160px}
+    .bigInput{
+      font-size:20px;
+      padding:20px;
+      text-align:center;
+      letter-spacing:.6px;
+    }
+    .center{
+      display:flex;min-height:70vh;align-items:center;justify-content:center;
+    }
+    .center .card{width:min(680px, 96vw)}
+    .statusLine{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .badge{padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line)}
+    .bPend{background:rgba(251,191,36,.12);color:var(--warn)}
+    .bLib{background:rgba(54,211,153,.12);color:var(--good)}
+    .bBloq{background:rgba(251,113,133,.12);color:var(--bad)}
+    .mono{font-family: ui-monospace, Menlo, Consolas, monospace}
+    .small{font-size:12px;color:var(--muted)}
+    pre{
+      white-space:pre-wrap;
+      word-break:break-word;
+      border:1px dashed #2b3a5f;
+      background:#0a1020;
+      padding:10px;border-radius:12px;
+      color:#d7e4ff;
+      margin:8px 0 0;
+    }
+    .toast{
+      position:fixed;left:50%;transform:translateX(-50%);
+      bottom:14px;background:#111a2b;border:1px solid #2b3a5f;
+      padding:10px 12px;border-radius:12px;color:#fff;
+      max-width:92vw;display:none;
+    }
+  </style>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <script>
-    const SUPABASE_URL = "https://tilpzusjlfxueieisws.supabase.co";
-const SUPABASE_ANON_KEY = "sb_publishable_XXXXXXXXXXXXXXXX";
-
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-    async function inserirSpool() {
-      const nome = document.getElementById("nome").value;
-
-      const { data, error } = await supabase
-        .from("spools")
-        .insert([{ nome_spool: nome }])
-        .select();
-
-      if (error) {
-        alert("Erro: " + error.message);
-      } else {
-        alert("Inserido com sucesso!");
-        listarSpools();
-      }
-    }
-
-    async function listarSpools() {
-      const { data, error } = await supabase
-        .from("spools")
-        .select("*")
-        .order("id", { ascending: false });
-
-      if (!error) {
-        document.getElementById("lista").innerText =
-          JSON.stringify(data, null, 2);
-      }
-    }
-
-    window.onload = listarSpools;
-  </script>
 </head>
 
-<body style="background:#0b1220;color:white;font-family:sans-serif;padding:20px">
+<body>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="pill">Rastreamento de <b>SPOOL</b> — Web App</div>
+      <div class="pill" id="conn">Conectando…</div>
+    </div>
 
-  <h1>Spool Tracker</h1>
+    <!-- TELA 1 -->
+    <div id="telaBusca" class="center">
+      <div class="card">
+        <h1 style="text-align:center;margin-top:6px;">RASTREAMENTO DE SPOOL</h1>
+        <div class="small" style="text-align:center;margin-bottom:10px;">
+          Cole o TAG do SPOOL e pesquise. Atualiza e todo mundo vê.
+        </div>
 
-  <input id="nome" placeholder="Nome do spool" />
-  <button onclick="inserirSpool()">Inserir</button>
+        <label>TAG do SPOOL</label>
+        <input id="inpTag" class="bigInput mono" placeholder="EX: IS-M01-BG-B10-0018-001-007" autocomplete="off" />
 
-  <pre id="lista"></pre>
+        <div class="row" style="margin-top:10px;">
+          <button id="btnBuscar" type="button" onclick="buscarSpool()">BUSCAR</button>
+          <button class="secondary" type="button" onclick="limparTudo()">LIMPAR</button>
+        </div>
+
+        <div class="card" style="margin-top:12px;">
+          <div class="small">Log / Erros (aparece aqui, nada fica escondido)</div>
+          <pre id="log">Aguardando busca…</pre>
+        </div>
+      </div>
+    </div>
+
+    <!-- TELA 2 -->
+    <div id="telaDetalhe" style="display:none;">
+      <div class="card">
+        <div class="row">
+          <button class="secondary" type="button" onclick="voltar()">⬅ Voltar</button>
+          <button class="secondary" type="button" onclick="recarregar()">🔄 Recarregar</button>
+        </div>
+
+        <h1 id="tagTitulo" class="mono" style="margin:10px 0 6px;"></h1>
+
+        <div class="statusLine">
+          <span class="badge" id="badgeEtapa"></span>
+          <span class="badge" id="badgeStatus"></span>
+          <span class="small" id="ultimaInfo"></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Atualizar</h2>
+
+        <div class="row">
+          <div>
+            <label>Etapa atual</label>
+            <select id="selEtapa" disabled></select>
+          </div>
+          <div>
+            <label>Status</label>
+            <select id="selStatus">
+              <option value="PENDENTE">🔴 PENDENTE / COM O SETOR</option>
+              <option value="LIBERADO">🟢 LIBERADO / OK</option>
+              <option value="BLOQUEADO">🟡 BLOQUEADO</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div id="boxLocal" style="display:none;">
+            <label>Localização (obrigatório na Logística)</label>
+            <input id="inpLocal" placeholder="Ex: Carreira 1, Pista, Galpão, Pintura, Bordo…" />
+          </div>
+          <div>
+            <label>Responsável (texto livre — ex: Nome/Matrícula)</label>
+            <input id="inpUsuario" placeholder="Ex: Carlos (Logística) / Matrícula 123" />
+          </div>
+        </div>
+
+        <div id="boxBloq" style="display:none;">
+          <label>Motivo do bloqueio (obrigatório)</label>
+          <textarea id="inpMotivo" placeholder="Descreva o motivo…"></textarea>
+        </div>
+
+        <div class="row" style="margin-top:10px;">
+          <button class="good" type="button" onclick="salvarStatus()">SALVAR STATUS</button>
+          <button class="warn" type="button" onclick="avancarEtapa()">AVANÇAR ETAPA</button>
+        </div>
+
+        <div class="small" style="margin-top:8px;">
+          Regra: não pode pular etapas. Para avançar, o status atual precisa estar <b>LIBERADO</b>.
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Histórico (últimos 15)</h2>
+        <pre id="hist">Carregando…</pre>
+      </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+  </div>
+
+<script>
+  // =========================
+  // CONFIG (TROQUE AQUI)
+  // =========================
+  const SUPABASE_URL = "COLE_AQUI_SUA_URL";
+  const SUPABASE_ANON_KEY = "COLE_AQUI_SUA_ANON_KEY";
+
+  // =========================
+  // CONSTANTES DE FLUXO
+  // =========================
+  const ETAPAS = ["Fabricação", "Logística 1", "Pintura", "Logística 2", "Bordo"];
+  const isLogistica = (e) => e === "Logística 1" || e === "Logística 2";
+
+  // =========================
+  // ESTADO
+  // =========================
+  let supa = null;
+  let spoolAtual = null; // registro da tabela spools
+  let canalRealtime = null;
+
+  // =========================
+  // UI HELPERS
+  // =========================
+  const el = (id) => document.getElementById(id);
+
+  function setLog(msg, obj){
+    el("log").textContent = obj ? (msg + "\n" + JSON.stringify(obj, null, 2)) : msg;
+  }
+
+  function toast(msg){
+    const t = el("toast");
+    t.textContent = msg;
+    t.style.display = "block";
+    setTimeout(()=> t.style.display = "none", 2400);
+  }
+
+  function badgeStatus(status){
+    const b = el("badgeStatus");
+    b.className = "badge " + (status === "LIBERADO" ? "bLib" : status === "BLOQUEADO" ? "bBloq" : "bPend");
+    b.textContent = status;
+  }
+
+  function badgeEtapa(etapa){
+    const b = el("badgeEtapa");
+    b.className = "badge";
+    b.textContent = etapa;
+  }
+
+  function showDetalhe(){
+    el("telaBusca").style.display = "none";
+    el("telaDetalhe").style.display = "block";
+  }
+
+  function showBusca(){
+    el("telaDetalhe").style.display = "none";
+    el("telaBusca").style.display = "flex";
+  }
+
+  function voltar(){
+    pararRealtime();
+    spoolAtual = null;
+    showBusca();
+  }
+
+  function limparTudo(){
+    el("inpTag").value = "";
+    setLog("Aguardando busca…");
+  }
+
+  // =========================
+  // INIT SUPABASE
+  // =========================
+  function init(){
+    try{
+      supa = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      el("conn").textContent = "Supabase conectado";
+      el("conn").style.borderColor = "#2b3a5f";
+    }catch(e){
+      el("conn").textContent = "Erro no Supabase JS";
+      setLog("Erro iniciando Supabase. Confira URL/KEY.", {erro: String(e)});
+    }
+
+    // preparar select de etapas
+    const sel = el("selEtapa");
+    sel.innerHTML = "";
+    for(const etapa of ETAPAS){
+      const opt = document.createElement("option");
+      opt.value = etapa; opt.textContent = etapa;
+      sel.appendChild(opt);
+    }
+
+    // mostrar/ocultar motivo bloqueio
+    el("selStatus").addEventListener("change", ()=>{
+      el("boxBloq").style.display = (el("selStatus").value === "BLOQUEADO") ? "block" : "none";
+    });
+  }
+
+  // =========================
+  // BUSCA (Tela 1 -> Tela 2)
+  // =========================
+  async function buscarSpool(){
+    try{
+      const tag = el("inpTag").value.trim();
+      if(!tag){
+        setLog("Digite/cole o TAG do SPOOL.");
+        return;
+      }
+      setLog("Buscando SPOOL…");
+
+      const { data, error } = await supa
+        .from("spools")
+        .select("*")
+        .eq("nome_spool", tag)
+        .limit(1);
+
+      if(error){
+        setLog("Erro buscando no banco (RLS/policy/colunas).", error);
+        return;
+      }
+
+      if(!data || data.length === 0){
+        setLog("SPOOL não encontrado. (Se era pra existir, confirme se o TAG está idêntico.)");
+        return;
+      }
+
+      spoolAtual = data[0];
+      montarTelaDetalhe();
+      showDetalhe();
+
+      // realtime: ouvir alterações desse SPOOL
+      iniciarRealtime(spoolAtual.nome_spool);
+
+    }catch(e){
+      setLog("Falha geral ao buscar.", {erro: String(e)});
+    }
+  }
+  window.buscarSpool = buscarSpool;
+
+  // =========================
+  // MONTAR DETALHE
+  // =========================
+  function montarTelaDetalhe(){
+    const s = spoolAtual;
+    el("tagTitulo").textContent = s.nome_spool;
+
+    const etapa = s.etapa || "Fabricação";
+    const status = s.status || "PENDENTE";
+
+    badgeEtapa(etapa);
+    badgeStatus(status);
+
+    el("selEtapa").value = etapa;
+    el("selStatus").value = status;
+
+    el("inpLocal").value = s.localizacao || "";
+    el("inpMotivo").value = s.bloqueio_motivo || "";
+    el("inpUsuario").value = s.atualizado_por || "";
+
+    el("boxLocal").style.display = isLogistica(etapa) ? "block" : "none";
+    el("boxBloq").style.display = (status === "BLOQUEADO") ? "block" : "none";
+
+    el("ultimaInfo").textContent = s.atualizado_em
+      ? `Última: ${new Date(s.atualizado_em).toLocaleString()}`
+      : "Última: —";
+
+    carregarHistorico();
+  }
+
+  async function recarregar(){
+    if(!spoolAtual) return;
+    try{
+      const { data, error } = await supa
+        .from("spools")
+        .select("*")
+        .eq("id", spoolAtual.id)
+        .limit(1);
+
+      if(error){
+        toast("Erro ao recarregar.");
+        setLog("Erro recarregando.", error);
+        return;
+      }
+      if(data && data[0]){
+        spoolAtual = data[0];
+        montarTelaDetalhe();
+        toast("Atualizado.");
+      }
+    }catch(e){
+      setLog("Falha recarregando.", {erro: String(e)});
+    }
+  }
+
+  // =========================
+  // REGRAS + AÇÕES
+  // =========================
+  function idxEtapa(etapa){
+    const i = ETAPAS.indexOf(etapa);
+    return i >= 0 ? i : 0;
+  }
+
+  function proximaEtapa(etapa){
+    const i = idxEtapa(etapa);
+    return (i < ETAPAS.length - 1) ? ETAPAS[i+1] : null;
+  }
+
+  function validarLocal(etapa, status, local){
+    if(isLogistica(etapa)){
+      // na logística, sempre exigir localização quando estiver com o setor (pendente) ou quando salvar qualquer coisa
+      if(!local || !local.trim()){
+        return "Na Logística, LOCALIZAÇÃO é obrigatória.";
+      }
+    }
+    return null;
+  }
+
+  function validarBloqueio(status, motivo){
+    if(status === "BLOQUEADO" && (!motivo || !motivo.trim())){
+      return "Para BLOQUEADO, o motivo é obrigatório.";
+    }
+    return null;
+  }
+
+  async function salvarStatus(){
+    if(!spoolAtual) return;
+    try{
+      const etapa = spoolAtual.etapa || "Fabricação";
+      const status = el("selStatus").value;
+      const local = el("inpLocal").value;
+      const motivo = el("inpMotivo").value;
+      const usuario = el("inpUsuario").value.trim() || "—";
+
+      const e1 = validarLocal(etapa, status, local);
+      if(e1){ toast(e1); return; }
+
+      const e2 = validarBloqueio(status, motivo);
+      if(e2){ toast(e2); return; }
+
+      const patch = {
+        status,
+        localizacao: isLogistica(etapa) ? (local || null) : null,
+        bloqueio_motivo: status === "BLOQUEADO" ? motivo : null,
+        atualizado_por: usuario,
+        atualizado_em: new Date().toISOString()
+      };
+
+      const { data, error } = await supa
+        .from("spools")
+        .update(patch)
+        .eq("id", spoolAtual.id)
+        .select("*")
+        .limit(1);
+
+      if(error){
+        toast("Erro ao salvar.");
+        setLog("Erro salvando status.", error);
+        return;
+      }
+
+      // histórico imutável
+      await inserirHistorico({
+        spool_id: spoolAtual.id,
+        nome_spool: spoolAtual.nome_spool,
+        obra: spoolAtual.obra || null,
+        etapa,
+        status,
+        localizacao: patch.localizacao,
+        observacao: status === "BLOQUEADO" ? ("Motivo: " + motivo) : "Atualização de status",
+        usuario
+      });
+
+      spoolAtual = data[0];
+      montarTelaDetalhe();
+      toast("Status salvo ✅");
+
+    }catch(e){
+      setLog("Falha salvando status.", {erro: String(e)});
+    }
+  }
+  window.salvarStatus = salvarStatus;
+
+  async function avancarEtapa(){
+    if(!spoolAtual) return;
+    try{
+      const etapaAtual = spoolAtual.etapa || "Fabricação";
+      const statusAtual = spoolAtual.status || "PENDENTE";
+
+      // regra: só avança se estiver LIBERADO
+      if(statusAtual !== "LIBERADO"){
+        toast("Para avançar, o status atual precisa estar LIBERADO.");
+        return;
+      }
+
+      const next = proximaEtapa(etapaAtual);
+      if(!next){
+        toast("Já está na última etapa (Bordo).");
+        return;
+      }
+
+      const usuario = el("inpUsuario").value.trim() || "—";
+
+      // ao avançar: entra na próxima etapa como PENDENTE
+      const patch = {
+        etapa: next,
+        status: "PENDENTE",
+        localizacao: isLogistica(next) ? (el("inpLocal").value || null) : null,
+        bloqueio_motivo: null,
+        atualizado_por: usuario,
+        atualizado_em: new Date().toISOString()
+      };
+
+      // se for logística, exige localização
+      const e1 = validarLocal(next, "PENDENTE", patch.localizacao || "");
+      if(e1){ toast(e1); return; }
+
+      const { data, error } = await supa
+        .from("spools")
+        .update(patch)
+        .eq("id", spoolAtual.id)
+        .select("*")
+        .limit(1);
+
+      if(error){
+        toast("Erro ao avançar.");
+        setLog("Erro avançando etapa.", error);
+        return;
+      }
+
+      // histórico: registrar a transição
+      await inserirHistorico({
+        spool_id: spoolAtual.id,
+        nome_spool: spoolAtual.nome_spool,
+        obra: spoolAtual.obra || null,
+        etapa: next,
+        status: "PENDENTE",
+        localizacao: patch.localizacao,
+        observacao: `Avanço: ${etapaAtual} → ${next}`,
+        usuario
+      });
+
+      spoolAtual = data[0];
+      montarTelaDetalhe();
+      toast(`Avançou para ${next} ✅`);
+
+    }catch(e){
+      setLog("Falha ao avançar etapa.", {erro: String(e)});
+    }
+  }
+  window.avancarEtapa = avancarEtapa;
+
+  // =========================
+  // HISTÓRICO
+  // =========================
+  async function inserirHistorico(payload){
+    try{
+      const { error } = await supa
+        .from("historico_atualizacoes")
+        .insert([payload]);
+
+      if(error){
+        // não quebra o app, mas mostra
+        setLog("Atenção: não conseguiu gravar histórico (verifique se a tabela existe).", error);
+      }
+    }catch(e){
+      setLog("Erro gravando histórico.", {erro: String(e)});
+    }
+  }
+
+  async function carregarHistorico(){
+    if(!spoolAtual) return;
+    try{
+      const { data, error } = await supa
+        .from("historico_atualizacoes")
+        .select("*")
+        .eq("nome_spool", spoolAtual.nome_spool)
+        .order("created_at", { ascending: false })
+        .limit(15);
+
+      if(error){
+        el("hist").textContent = "Erro carregando histórico. (Confira se a tabela historico_atualizacoes existe.)\n\n" + JSON.stringify(error, null, 2);
+        return;
+      }
+
+      if(!data || data.length === 0){
+        el("hist").textContent = "Sem histórico ainda.";
+        return;
+      }
+
+      el("hist").textContent = data.map(h => {
+        const dt = new Date(h.created_at).toLocaleString();
+        const loc = h.localizacao ? ` | Local: ${h.localizacao}` : "";
+        const obs = h.observacao ? ` | Obs: ${h.observacao}` : "";
+        const usr = h.usuario ? ` | Por: ${h.usuario}` : "";
+        return `${dt} | ${h.etapa} | ${h.status}${loc}${usr}${obs}`;
+      }).join("\n");
+
+    }catch(e){
+      el("hist").textContent = "Falha carregando histórico: " + String(e);
+    }
+  }
+
+  // =========================
+  // REALTIME (AO VIVO)
+  // =========================
+  function pararRealtime(){
+    try{
+      if(canalRealtime){
+        supa.removeChannel(canalRealtime);
+        canalRealtime = null;
+      }
+    }catch(_){}
+  }
+
+  function iniciarRealtime(nomeSpool){
+    pararRealtime();
+    try{
+      canalRealtime = supa.channel("rt-spools-" + nomeSpool);
+
+      canalRealtime
+        .on("postgres_changes", {
+          event: "UPDATE",
+          schema: "public",
+          table: "spools",
+          filter: `nome_spool=eq.${nomeSpool}`
+        }, (payload) => {
+          // payload.new tem o registro atualizado
+          spoolAtual = payload.new;
+          montarTelaDetalhe();
+          toast(`Atualizado: ${spoolAtual.status} / ${spoolAtual.etapa}`);
+        })
+        .subscribe((status) => {
+          // ok
+        });
+    }catch(e){
+      setLog("Realtime não iniciou. (Sem crise, o app ainda funciona.)", {erro: String(e)});
+    }
+  }
+
+  // =========================
+  // START
+  // =========================
+  init();
+</script>
 
 </body>
 </html>
