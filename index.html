@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de SPOOL</title>
+  <title>Rastreamento de S-B-O-O-L</title>
 
   <!-- Ícones (use o mesmo nome do arquivo que está no repo) -->
   <link rel="icon" href="icon.PNG?v=1">
@@ -19,9 +19,9 @@
       --muted:#aab6d8;
       --btn:#2c56ff;
       --btn2:#1f3fb6;
+      --danger:#ff4d4d;
       --ok:#22c55e;
       --warn:#fbbf24;
-      --bad:#ff4d4d;
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, Helvetica, sans-serif;
     }
@@ -41,8 +41,7 @@
       padding:26px 14px;
     }
 
-    .wrap{ width:min(820px, 100%); }
-
+    .wrap{ width:min(920px, 100%); }
     .card{
       background: linear-gradient(180deg, rgba(17,28,56,.85), rgba(10,18,36,.85));
       border: 1px solid rgba(43,58,102,.75);
@@ -54,7 +53,7 @@
 
     h1{
       margin: 4px 0 8px;
-      font-size: clamp(26px, 4vw, 40px);
+      font-size: clamp(24px, 4vw, 38px);
       letter-spacing: .08em;
       text-transform: uppercase;
       text-align:center;
@@ -87,26 +86,14 @@
     }
     .pill b{ color: var(--text); }
 
-    .badge{
-      display:inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing:.04em;
-      text-transform: uppercase;
-      border: 1px solid transparent;
-    }
-    .b-ok{ background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.35); color: #b7f7cd; }
-    .b-warn{ background: rgba(251,191,36,.18); border-color: rgba(251,191,36,.35); color: #ffe6a6; }
-    .b-bad{ background: rgba(255,77,77,.18); border-color: rgba(255,77,77,.35); color: #ffb5b5; }
-
     label{
       display:block;
       margin: 14px 0 8px;
       color: var(--muted);
-      font-weight: 700;
+      font-weight: 800;
       letter-spacing: .02em;
+      text-transform: uppercase;
+      font-size: 12px;
     }
 
     .inputBig{
@@ -128,15 +115,26 @@
       letter-spacing: .08em;
     }
 
-    .inputSmall, select{
+    .inputMid{
       width:100%;
-      border-radius: 14px;
+      border-radius: 16px;
       border: 1px solid rgba(43,58,102,.9);
       background: rgba(6,10,20,.55);
       color: var(--text);
       padding: 14px 14px;
-      font-size: 16px;
+      font-size: 18px;
+      font-family: var(--mono);
       outline:none;
+      text-align:left;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    select.inputMid{
+      font-family: var(--sans);
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 700;
     }
 
     .btnrow{
@@ -151,7 +149,7 @@
       border: none;
       border-radius: 18px;
       padding: 18px 14px;
-      font-size: 22px;
+      font-size: 20px;
       font-weight: 900;
       letter-spacing: .08em;
       text-transform: uppercase;
@@ -161,16 +159,16 @@
       transition: transform .06s ease, filter .12s ease;
     }
     button:active{ transform: translateY(1px); }
-    button:disabled{ opacity:.55; cursor:not-allowed; }
-
-    .btnSearch{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
-    .btnClear{
+    .btnPrimary{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
+    .btnGhost{
       background: linear-gradient(180deg, rgba(30,41,76,.9), rgba(14,20,42,.9));
       border: 1px solid rgba(43,58,102,.9);
       box-shadow: none;
     }
-    .btnUpdate{
-      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(16,140,60,.95));
+    button[disabled]{
+      opacity:.45;
+      cursor:not-allowed;
+      filter:saturate(.7);
     }
 
     .section{
@@ -180,12 +178,13 @@
       background: rgba(7,12,26,.35);
       padding: 14px;
     }
-
     .sectionTitle{
       margin:0 0 10px;
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .02em;
+      text-transform: uppercase;
+      font-size: 12px;
     }
 
     pre{
@@ -193,7 +192,7 @@
       white-space: pre-wrap;
       word-break: break-word;
       font-family: var(--mono);
-      font-size: 14px;
+      font-size: 13px;
       line-height: 1.35;
       padding: 12px;
       border-radius: 14px;
@@ -208,7 +207,6 @@
       gap:10px;
       margin-top: 10px;
     }
-
     .kv{
       display:flex;
       justify-content:space-between;
@@ -221,7 +219,7 @@
     }
     .k{
       color: var(--muted);
-      font-weight: 800;
+      font-weight: 900;
       letter-spacing: .02em;
       text-transform: uppercase;
       font-size: 12px;
@@ -230,23 +228,37 @@
       font-family: var(--mono);
       font-size: 14px;
       text-align:right;
-      overflow-wrap:anywhere;
     }
 
-    .twoCol{
+    .badge{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+    .b-ok{ background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.35); color: #b7f7cd; }
+    .b-warn{ background: rgba(251,191,36,.18); border-color: rgba(251,191,36,.35); color: #ffe6a6; }
+    .b-bad{ background: rgba(255,77,77,.18); border-color: rgba(255,77,77,.35); color: #ffb5b5; }
+
+    .row2{
       display:grid;
       grid-template-columns: 1fr;
-      gap:12px;
+      gap: 12px;
     }
-    @media (min-width:720px){
-      .twoCol{ grid-template-columns: 1fr 1fr; }
+    @media (min-width: 760px){
+      .row2{ grid-template-columns: 1fr 1fr; }
     }
 
-    .foot{
-      margin-top:12px;
-      text-align:center;
-      color: rgba(170,182,216,.6);
+    .hint{
+      color: rgba(170,182,216,.75);
       font-size: 12px;
+      margin-top: 6px;
+      line-height: 1.3;
     }
   </style>
 </head>
@@ -254,40 +266,35 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>RASTREAMENTO DE SPOOL</h1>
-      <p class="sub">Cole o TAG do SPOOL e pesquise. Atualiza e todo mundo vê.</p>
+      <h1>RASTREAMENTO DE S-B-O-O-L</h1>
+      <p class="sub">Buscar, ver onde está e atualizar com responsabilidade.</p>
 
       <div class="pillrow">
         <div class="pill" id="sbStatus"><b>Supabase:</b> iniciando...</div>
-        <div class="pill"><b>Tabela:</b> public.spools / <b>Coluna:</b> nome_spool</div>
+        <div class="pill"><b>Tabela:</b> public.spools / <b>Chave:</b> nome_spool</div>
       </div>
 
-      <label for="tagInput">TAG do SPOOL</label>
+      <label for="tagInput">TAG do S-B-O-O-L</label>
       <input
         id="tagInput"
         class="inputBig"
-        placeholder="EX: IS-M01-BG-B10-0018-001-010"
+        placeholder="EX: IS-M01-BG-B10-0018-001-007"
         autocomplete="off"
         autocapitalize="characters"
         spellcheck="false"
       />
 
       <div class="btnrow">
-        <button class="btnSearch" id="btnBuscar">BUSCAR</button>
-        <button class="btnClear" id="btnLimpar">LIMPAR</button>
+        <button class="btnPrimary" id="btnBuscar">BUSCAR</button>
+        <button class="btnGhost" id="btnLimpar">LIMPAR</button>
       </div>
 
       <div class="section">
-        <div class="sectionTitle">Log / Erros (aparece aqui, nada fica escondido)</div>
-        <pre id="logBox">Aguardando…</pre>
-      </div>
-
-      <div class="section">
-        <div class="sectionTitle">Resultado</div>
+        <div class="sectionTitle">Resultado atual</div>
         <div class="grid">
           <div class="kv">
-            <div class="k">Nome do SPOOL</div>
-            <div class="v" id="outNome">—</div>
+            <div class="k">TAG</div>
+            <div class="v" id="outTag">—</div>
           </div>
           <div class="kv">
             <div class="k">Status</div>
@@ -309,42 +316,42 @@
       </div>
 
       <div class="section">
-        <div class="sectionTitle">Atualizar (produção / movimentação)</div>
+        <div class="sectionTitle">Atualizar andamento</div>
 
-        <div class="twoCol">
+        <div class="row2">
           <div>
-            <label for="inStatus">Novo status</label>
-            <select id="inStatus">
-              <option value="">(não alterar)</option>
-              <option value="EM FABRICAÇÃO">EM FABRICAÇÃO</option>
-              <option value="FABRICADO">FABRICADO</option>
-              <option value="EM INSPEÇÃO">EM INSPEÇÃO</option>
-              <option value="LIBERADO">LIBERADO</option>
-              <option value="EM TRANSPORTE">EM TRANSPORTE</option>
-              <option value="ENTREGUE">ENTREGUE</option>
-              <option value="BAIXADO">BAIXADO</option>
-            </select>
+            <label for="inpResp">Responsável (obrigatório)</label>
+            <input id="inpResp" class="inputMid" placeholder="EX: JULIO / MARCELO" autocomplete="off" />
+            <div class="hint">Quem clicar para atualizar assume a responsabilidade do registro.</div>
           </div>
 
           <div>
-            <label for="inLocalizacao">Localização (opcional)</label>
-            <input id="inLocalizacao" class="inputSmall" placeholder="EX: LINHA 2 / SETOR A / GALPÃO" />
-          </div>
-
-          <div>
-            <label for="inResponsavel">Responsável (opcional)</label>
-            <input id="inResponsavel" class="inputSmall" placeholder="EX: VERA" />
-          </div>
-
-          <div>
-            <label>&nbsp;</label>
-            <button class="btnUpdate" id="btnAtualizar">ATUALIZAR</button>
+            <label for="selStatus">Novo status (lista fixa)</label>
+            <select id="selStatus" class="inputMid"></select>
+            <div class="hint">Sem inventar status. Sem texto solto.</div>
           </div>
         </div>
 
-        <div class="foot">A data/hora é convertida automaticamente para o horário do celular.</div>
+        <div style="margin-top:12px;">
+          <label for="inpLocal">Localização (obrigatória em FOI PAGO / PISTA)</label>
+          <input id="inpLocal" class="inputMid" placeholder="EX: PISTA 1 / GALPÃO / CARREIRA 2" autocomplete="off" />
+          <div class="hint" id="localHint">Quando escolher “FOI PAGO – PISTA X”, a localização é preenchida automaticamente e fica obrigatória.</div>
+        </div>
+
+        <div class="btnrow">
+          <button class="btnPrimary" id="btnAtualizar" disabled>ATUALIZAR</button>
+          <button class="btnGhost" id="btnRecarregar" disabled>RECARREGAR</button>
+        </div>
+
+        <div class="hint">
+          Dica: O certo é sempre atualizar primeiro no setor que está com o S-B-O-O-L, e só depois passar para o próximo.
+        </div>
       </div>
 
+      <div class="section">
+        <div class="sectionTitle">Log / erros (aparece aqui, nada fica escondido)</div>
+        <pre id="logBox">Aguardando…</pre>
+      </div>
     </div>
   </div>
 
@@ -400,18 +407,32 @@
 
   <!-- 2) App -->
   <script>
-    // ✅ SUAS CREDENCIAIS
-    const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
+    // ✅ SUAS CREDENCIAIS (SEM TROCAR NOMES)
+    const SUPABASE_URL = "https://tilpzusjfgxueieisws.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
+
+    // ✅ Lista fixa de status (do jeito que você definiu)
+    const STATUS_FIXOS = [
+      "OFICINA - FABRICAÇÃO",
+      "LOGÍSTICA - PÓS FABRICAÇÃO",
+      "PINTURA",
+      "LOGÍSTICA - PÓS PINTURA",
+      "FOI PAGO - PISTA 1",
+      "FOI PAGO - PISTA 2",
+      "FOI PAGO - PISTA 3",
+      "FOI PAGO - PISTA 4",
+      "BORDO - PRODUÇÃO"
+    ];
 
     let sb = null;
     let lastTag = null;
 
     function cleanTag(raw) {
-      return (raw || "")
-        .trim()
-        .toUpperCase()
-        .replace(/\s+/g, "");
+      return (raw || "").trim().toUpperCase().replace(/\s+/g, "");
+    }
+
+    function cleanUpper(raw) {
+      return (raw || "").trim().toUpperCase();
     }
 
     function setOut(id, val) {
@@ -419,51 +440,76 @@
       if (el) el.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
     }
 
+    function toLocalDateTime(isoString) {
+      if (!isoString) return "—";
+      try{
+        const d = new Date(isoString);
+        if (isNaN(d.getTime())) return isoString;
+        return d.toLocaleString(); // horário local do iPhone/Android/PC
+      } catch {
+        return isoString;
+      }
+    }
+
     function clearOutputs() {
-      setOut("outNome", "—");
+      setOut("outTag", "—");
       setOut("outStatus", "—");
       setOut("outLocalizacao", "—");
       setOut("outResponsavel", "—");
       setOut("outAtualizado", "—");
     }
 
-    // ✅ CONVERSÃO PROFISSIONAL (ISO/UTC -> horário local do celular em pt-BR)
-    function formatDateBR(isoString) {
-      if (!isoString) return "—";
-      const d = new Date(isoString);
-      if (isNaN(d.getTime())) return String(isoString);
-
-      // Ex: 27/02/2026 17:35 (horário local do aparelho)
-      const datePart = new Intl.DateTimeFormat("pt-BR", {
-        day: "2-digit",
-        month: "2-digit",
-        year: "numeric"
-      }).format(d);
-
-      const timePart = new Intl.DateTimeFormat("pt-BR", {
-        hour: "2-digit",
-        minute: "2-digit"
-      }).format(d);
-
-      return `${datePart} ${timePart}`;
+    function setUpdateEnabled(on) {
+      const btnAtualizar = document.getElementById("btnAtualizar");
+      const btnRecarregar = document.getElementById("btnRecarregar");
+      if (btnAtualizar) btnAtualizar.disabled = !on;
+      if (btnRecarregar) btnRecarregar.disabled = !on;
     }
 
-    function btnLoading(isLoading) {
-      const b1 = document.getElementById("btnBuscar");
-      const b2 = document.getElementById("btnAtualizar");
-      if (b1) b1.disabled = isLoading;
-      if (b2) b2.disabled = isLoading;
+    function fillStatusSelect() {
+      const sel = document.getElementById("selStatus");
+      if (!sel) return;
+      sel.innerHTML = "";
+      for (const s of STATUS_FIXOS) {
+        const opt = document.createElement("option");
+        opt.value = s;
+        opt.textContent = s;
+        sel.appendChild(opt);
+      }
+    }
+
+    function applyLocationRule() {
+      const sel = document.getElementById("selStatus");
+      const loc = document.getElementById("inpLocal");
+      const hint = document.getElementById("localHint");
+      if (!sel || !loc) return;
+
+      const st = sel.value || "";
+
+      // Se for FOI PAGO - PISTA X: preencher e travar
+      if (st.startsWith("FOI PAGO - PISTA")) {
+        const pista = st.replace("FOI PAGO - ", "").trim(); // "PISTA 1"
+        loc.value = pista;
+        loc.disabled = true;
+        if (hint) hint.textContent = "OK: selecionou “FOI PAGO”. Localização foi preenchida automaticamente.";
+        return;
+      }
+
+      // Caso contrário: liberar digitação (mas pode ficar em branco)
+      loc.disabled = false;
+      if (hint) hint.textContent = "Se estiver em logística/pátio, preencha a localização (pista/galpão/carreira).";
     }
 
     async function init() {
+      fillStatusSelect();
+      applyLocationRule();
+
       const ok = await ensureSupabaseLib();
       if (!ok) return;
 
       try {
-        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
-          auth: { persistSession: false }
-        });
-        setSbPill("online ✅", "b-ok");
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        setSbPill("conectado ✅", "b-ok");
         setLog("Pronto. Cole um TAG e clique BUSCAR.");
       } catch (e) {
         setSbPill("erro no client", "b-bad");
@@ -472,22 +518,15 @@
     }
 
     async function buscar() {
-      if (!sb) {
-        setLog("Ainda não conectou no Supabase. Veja o status acima.");
-        return;
-      }
+      if (!sb) { setLog("Ainda não conectou no Supabase."); return; }
 
       const input = document.getElementById("tagInput");
       const tag = cleanTag(input?.value);
 
-      if (!tag) {
-        setLog("Cole um TAG válido primeiro.");
-        return;
-      }
+      if (!tag) { setLog("Cole um TAG válido primeiro."); return; }
 
-      btnLoading(true);
-      lastTag = tag;
       clearOutputs();
+      setUpdateEnabled(false);
       setLog("Buscando: " + tag + " …");
 
       try {
@@ -498,149 +537,134 @@
           .limit(1);
 
         if (error) {
-          setLog(
-            "Erro buscando no banco.\n\n" +
-            JSON.stringify(
-              {
-                message: error.message,
-                details: error.details || "",
-                hint: error.hint || "",
-                code: error.code || ""
-              },
-              null,
-              2
-            )
-          );
+          setLog("Erro buscando no banco:\n" + JSON.stringify(error, null, 2));
           return;
         }
 
         if (!data || data.length === 0) {
           setLog("Não achei esse TAG no banco: " + tag);
+          setOut("outTag", tag);
           setOut("outStatus", "NÃO ENCONTRADO");
+          lastTag = null;
           return;
         }
 
         const row = data[0];
-        setLog("Encontrado ✅");
+        lastTag = row.nome_spool;
 
-        setOut("outNome", row.nome_spool);
+        setOut("outTag", row.nome_spool);
         setOut("outStatus", row.status);
         setOut("outLocalizacao", row.localizacao);
         setOut("outResponsavel", row.responsavel);
-        setOut("outAtualizado", formatDateBR(row.atualizado_em));
+        setOut("outAtualizado", toLocalDateTime(row.atualizado_em));
 
+        // pré-seleciona o status atual no dropdown (se existir)
+        const sel = document.getElementById("selStatus");
+        if (sel && row.status && STATUS_FIXOS.includes(row.status)) {
+          sel.value = row.status;
+          applyLocationRule();
+        }
+
+        setUpdateEnabled(true);
+        setLog("Encontrado ✅ Agora você pode atualizar o andamento.");
       } catch (e) {
-        setLog(
-          "Falha geral (rede/bloqueio).\n" +
-          "Detalhe: " + (e?.message || e)
-        );
-      } finally {
-        btnLoading(false);
+        setLog("Falha geral:\n" + (e?.message || e));
       }
     }
 
     async function atualizar() {
-      if (!sb) {
-        setLog("Ainda não conectou no Supabase. Veja o status acima.");
+      if (!sb) { setLog("Ainda não conectou no Supabase."); return; }
+      if (!lastTag) { setLog("Busque um TAG antes de atualizar."); return; }
+
+      const resp = cleanUpper(document.getElementById("inpResp")?.value);
+      const statusNovo = document.getElementById("selStatus")?.value || "";
+      const locEl = document.getElementById("inpLocal");
+      const local = cleanUpper(locEl?.value);
+
+      if (!resp) {
+        setLog("ERRO: Responsável é obrigatório.");
         return;
       }
 
-      const tag = lastTag || cleanTag(document.getElementById("tagInput")?.value);
-      if (!tag) {
-        setLog("Primeiro BUSQUE um TAG. Depois atualize.");
+      if (!statusNovo || !STATUS_FIXOS.includes(statusNovo)) {
+        setLog("ERRO: Selecione um status válido.");
         return;
       }
 
-      const newStatus = (document.getElementById("inStatus")?.value || "").trim();
-      const newLoc = (document.getElementById("inLocalizacao")?.value || "").trim();
-      const newResp = (document.getElementById("inResponsavel")?.value || "").trim();
-
-      if (!newStatus && !newLoc && !newResp) {
-        setLog("Você não escolheu nada para atualizar.");
-        return;
+      // Regra: FOI PAGO - PISTA X -> localização obrigatória (e já preenchida)
+      if (statusNovo.startsWith("FOI PAGO - PISTA")) {
+        if (!local) {
+          setLog("ERRO: Em FOI PAGO / PISTA, a localização é obrigatória.");
+          return;
+        }
       }
 
-      const payload = {};
-      if (newStatus) payload.status = newStatus;
-      if (newLoc) payload.localizacao = newLoc;
-      if (newResp) payload.responsavel = newResp;
+      setLog("Atualizando " + lastTag + " …");
 
-      // Se seu banco tem trigger, pode nem precisar disso, mas ajuda:
-      payload.atualizado_em = new Date().toISOString();
-
-      btnLoading(true);
-      setLog("Atualizando: " + tag + " …");
+      // atualizado_em: agora (ISO)
+      const nowIso = new Date().toISOString();
 
       try {
-        const { data, error } = await sb
+        const { error } = await sb
           .from("spools")
-          .update(payload)
-          .eq("nome_spool", tag)
-          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
-          .limit(1);
+          .update({
+            status: statusNovo,
+            localizacao: local || null,
+            responsavel: resp,
+            atualizado_em: nowIso
+          })
+          .eq("nome_spool", lastTag);
 
         if (error) {
-          setLog(
-            "Erro atualizando no banco.\n\n" +
-            JSON.stringify(
-              {
-                message: error.message,
-                details: error.details || "",
-                hint: error.hint || "",
-                code: error.code || ""
-              },
-              null,
-              2
-            )
-          );
+          setLog("Erro ao atualizar:\n" + JSON.stringify(error, null, 2));
           return;
         }
 
-        setLog("Atualizado ✅");
-
-        if (data && data[0]) {
-          const row = data[0];
-          setOut("outNome", row.nome_spool);
-          setOut("outStatus", row.status);
-          setOut("outLocalizacao", row.localizacao);
-          setOut("outResponsavel", row.responsavel);
-          setOut("outAtualizado", formatDateBR(row.atualizado_em));
-        } else {
-          // Se o select não retornar por alguma config, faz um novo buscar:
-          await buscar();
-        }
+        setLog("Atualizado ✅ Agora todo mundo vê.");
+        // Recarrega para refletir
+        await buscar();
       } catch (e) {
-        setLog("Falha geral ao atualizar.\nDetalhe: " + (e?.message || e));
-      } finally {
-        btnLoading(false);
+        setLog("Falha geral atualizando:\n" + (e?.message || e));
       }
     }
 
     function limpar() {
       const input = document.getElementById("tagInput");
       if (input) input.value = "";
-      const st = document.getElementById("inStatus");
-      const loc = document.getElementById("inLocalizacao");
-      const resp = document.getElementById("inResponsavel");
-      if (st) st.value = "";
-      if (loc) loc.value = "";
+      const resp = document.getElementById("inpResp");
+      const loc = document.getElementById("inpLocal");
       if (resp) resp.value = "";
-
+      if (loc) loc.value = "";
       lastTag = null;
       clearOutputs();
+      setUpdateEnabled(false);
+      applyLocationRule();
       setLog("Limpo. Cole um TAG e clique BUSCAR.");
     }
 
     window.addEventListener("load", () => {
       init();
 
-      document.getElementById("btnBuscar")?.addEventListener("click", buscar);
-      document.getElementById("btnLimpar")?.addEventListener("click", limpar);
-      document.getElementById("btnAtualizar")?.addEventListener("click", atualizar);
+      const btnBuscar = document.getElementById("btnBuscar");
+      const btnLimpar = document.getElementById("btnLimpar");
+      const btnAtualizar = document.getElementById("btnAtualizar");
+      const btnRecarregar = document.getElementById("btnRecarregar");
+      const input = document.getElementById("tagInput");
+      const sel = document.getElementById("selStatus");
 
-      document.getElementById("tagInput")?.addEventListener("keydown", (ev) => {
-        if (ev.key === "Enter") buscar();
-      });
+      if (btnBuscar) btnBuscar.addEventListener("click", buscar);
+      if (btnLimpar) btnLimpar.addEventListener("click", limpar);
+      if (btnAtualizar) btnAtualizar.addEventListener("click", atualizar);
+      if (btnRecarregar) btnRecarregar.addEventListener("click", buscar);
+
+      if (sel) sel.addEventListener("change", applyLocationRule);
+
+      // Enter busca
+      if (input) {
+        input.addEventListener("keydown", (ev) => {
+          if (ev.key === "Enter") buscar();
+        });
+      }
     });
   </script>
 </body>
