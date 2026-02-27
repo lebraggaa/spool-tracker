@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rastreamento de S-B-O-O-L</title>
+  <title>Rastreamento de SPOOL</title>
 
-  <!-- Ícones (use o mesmo nome do arquivo que está no repo) -->
   <link rel="icon" href="icon.PNG?v=1">
   <link rel="apple-touch-icon" href="icon.PNG?v=1">
 
@@ -25,7 +24,6 @@
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Inter, Arial, Helvetica, sans-serif;
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
@@ -40,8 +38,7 @@
       justify-content:center;
       padding:26px 14px;
     }
-
-    .wrap{ width:min(920px, 100%); }
+    .wrap{ width:min(860px, 100%); }
     .card{
       background: linear-gradient(180deg, rgba(17,28,56,.85), rgba(10,18,36,.85));
       border: 1px solid rgba(43,58,102,.75);
@@ -50,23 +47,21 @@
       padding: 22px 18px;
       backdrop-filter: blur(8px);
     }
-
     h1{
-      margin: 4px 0 8px;
-      font-size: clamp(24px, 4vw, 38px);
+      margin: 6px 0 8px;
+      font-size: clamp(26px, 4vw, 40px);
       letter-spacing: .08em;
       text-transform: uppercase;
       text-align:center;
       font-weight: 900;
     }
-
     .sub{
       text-align:center;
       color: var(--muted);
       margin: 0 0 18px;
       font-size: 15px;
+      line-height:1.4;
     }
-
     .pillrow{
       display:flex;
       gap:10px;
@@ -74,7 +69,6 @@
       justify-content:center;
       margin-bottom: 14px;
     }
-
     .pill{
       border: 1px solid rgba(43,58,102,.75);
       background: rgba(8,14,28,.55);
@@ -85,6 +79,18 @@
       max-width: 100%;
     }
     .pill b{ color: var(--text); }
+    .badge{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing:.04em;
+      text-transform: uppercase;
+    }
+    .b-ok{ background: rgba(34,197,94,.18); border:1px solid rgba(34,197,94,.35); color: #b7f7cd; }
+    .b-warn{ background: rgba(251,191,36,.18); border:1px solid rgba(251,191,36,.35); color: #ffe6a6; }
+    .b-bad{ background: rgba(255,77,77,.18); border:1px solid rgba(255,77,77,.35); color: #ffb5b5; }
 
     label{
       display:block;
@@ -95,46 +101,29 @@
       text-transform: uppercase;
       font-size: 12px;
     }
-
-    .inputBig{
+    .inputBig, .input, select{
       width:100%;
       border-radius: 18px;
       border: 1px solid rgba(43,58,102,.9);
       background: rgba(6,10,20,.55);
       color: var(--text);
-      padding: 18px 16px;
+      padding: 16px 14px;
+      outline:none;
+    }
+    .inputBig{
       font-size: clamp(18px, 3.8vw, 26px);
       font-family: var(--mono);
-      outline:none;
       text-align:center;
       letter-spacing: .06em;
       text-transform: uppercase;
     }
-    .inputBig::placeholder{
-      color: rgba(170,182,216,.55);
-      letter-spacing: .08em;
-    }
-
-    .inputMid{
-      width:100%;
-      border-radius: 16px;
-      border: 1px solid rgba(43,58,102,.9);
-      background: rgba(6,10,20,.55);
-      color: var(--text);
-      padding: 14px 14px;
-      font-size: 18px;
+    .input{
+      font-size: 16px;
       font-family: var(--mono);
-      outline:none;
-      text-align:left;
-      letter-spacing: .04em;
-      text-transform: uppercase;
     }
-
-    select.inputMid{
+    select{
+      font-size: 16px;
       font-family: var(--sans);
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 700;
     }
 
     .btnrow{
@@ -143,7 +132,6 @@
       margin-top: 14px;
       flex-wrap:wrap;
     }
-
     button{
       flex: 1 1 220px;
       border: none;
@@ -159,16 +147,24 @@
       transition: transform .06s ease, filter .12s ease;
     }
     button:active{ transform: translateY(1px); }
-    .btnPrimary{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
-    .btnGhost{
+    .btnSearch{ background: linear-gradient(180deg, var(--btn), var(--btn2)); }
+    .btnClear{
       background: linear-gradient(180deg, rgba(30,41,76,.9), rgba(14,20,42,.9));
       border: 1px solid rgba(43,58,102,.9);
       box-shadow: none;
     }
-    button[disabled]{
+    .btnUpdate{
+      background: linear-gradient(180deg, rgba(34,197,94,.95), rgba(16,122,56,.95));
+    }
+    .btnReload{
+      background: linear-gradient(180deg, rgba(148,163,184,.35), rgba(71,85,105,.35));
+      border: 1px solid rgba(43,58,102,.9);
+      box-shadow: none;
+    }
+    button:disabled{
       opacity:.45;
       cursor:not-allowed;
-      filter:saturate(.7);
+      filter: grayscale(.2);
     }
 
     .section{
@@ -186,21 +182,20 @@
       text-transform: uppercase;
       font-size: 12px;
     }
-
     pre{
       margin:0;
       white-space: pre-wrap;
       word-break: break-word;
       font-family: var(--mono);
-      font-size: 13px;
+      font-size: 14px;
       line-height: 1.35;
       padding: 12px;
       border-radius: 14px;
       border: 1px dashed rgba(43,58,102,.75);
       background: rgba(4,8,16,.45);
       color: #d7e3ff;
+      min-height: 54px;
     }
-
     .grid{
       display:grid;
       grid-template-columns: 1fr;
@@ -228,37 +223,17 @@
       font-family: var(--mono);
       font-size: 14px;
       text-align:right;
-    }
-
-    .badge{
-      display:inline-block;
-      padding: 6px 10px;
-      border-radius: 999px;
-      font-size: 12px;
-      font-weight: 900;
-      letter-spacing:.04em;
-      text-transform: uppercase;
-      border: 1px solid transparent;
+      max-width: 62%;
+      overflow:hidden;
+      text-overflow: ellipsis;
       white-space: nowrap;
     }
-    .b-ok{ background: rgba(34,197,94,.18); border-color: rgba(34,197,94,.35); color: #b7f7cd; }
-    .b-warn{ background: rgba(251,191,36,.18); border-color: rgba(251,191,36,.35); color: #ffe6a6; }
-    .b-bad{ background: rgba(255,77,77,.18); border-color: rgba(255,77,77,.35); color: #ffb5b5; }
-
-    .row2{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    @media (min-width: 760px){
-      .row2{ grid-template-columns: 1fr 1fr; }
-    }
-
     .hint{
-      color: rgba(170,182,216,.75);
+      margin-top:10px;
+      text-align:center;
+      color: rgba(170,182,216,.65);
       font-size: 12px;
-      margin-top: 6px;
-      line-height: 1.3;
+      line-height:1.35;
     }
   </style>
 </head>
@@ -266,35 +241,40 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>RASTREAMENTO DE S-B-O-O-L</h1>
-      <p class="sub">Buscar, ver onde está e atualizar com responsabilidade.</p>
+      <h1>RASTREAMENTO DE SPOOL</h1>
+      <p class="sub">Cole o TAG do <b>SPOOL</b>, pesquise, e (se precisar) atualize o status. Tudo fica registrado no banco.</p>
 
       <div class="pillrow">
         <div class="pill" id="sbStatus"><b>Supabase:</b> iniciando...</div>
-        <div class="pill"><b>Tabela:</b> public.spools / <b>Chave:</b> nome_spool</div>
+        <div class="pill"><b>Tabela:</b> public.spools / <b>Coluna:</b> nome_spool</div>
       </div>
 
-      <label for="tagInput">TAG do S-B-O-O-L</label>
+      <label for="tagInput">TAG do SPOOL</label>
       <input
         id="tagInput"
         class="inputBig"
-        placeholder="EX: IS-M01-BG-B10-0018-001-007"
+        placeholder="EX: IS-M01-BG-B10-0018-001-010"
         autocomplete="off"
         autocapitalize="characters"
         spellcheck="false"
       />
 
       <div class="btnrow">
-        <button class="btnPrimary" id="btnBuscar">BUSCAR</button>
-        <button class="btnGhost" id="btnLimpar">LIMPAR</button>
+        <button class="btnSearch" id="btnBuscar">BUSCAR</button>
+        <button class="btnClear" id="btnLimpar">LIMPAR</button>
       </div>
 
       <div class="section">
-        <div class="sectionTitle">Resultado atual</div>
+        <div class="sectionTitle">Log / Erros (aparece aqui, nada fica escondido)</div>
+        <pre id="logBox">Aguardando…</pre>
+      </div>
+
+      <div class="section">
+        <div class="sectionTitle">Resultado</div>
         <div class="grid">
           <div class="kv">
-            <div class="k">TAG</div>
-            <div class="v" id="outTag">—</div>
+            <div class="k">Nome do SPOOL</div>
+            <div class="v" id="outNome">—</div>
           </div>
           <div class="kv">
             <div class="k">Status</div>
@@ -316,46 +296,39 @@
       </div>
 
       <div class="section">
-        <div class="sectionTitle">Atualizar andamento</div>
+        <div class="sectionTitle">Atualizar (produção / movimentação)</div>
 
-        <div class="row2">
-          <div>
-            <label for="inpResp">Responsável (obrigatório)</label>
-            <input id="inpResp" class="inputMid" placeholder="EX: JULIO / MARCELO" autocomplete="off" />
-            <div class="hint">Quem clicar para atualizar assume a responsabilidade do registro.</div>
-          </div>
+        <label for="newStatus">Novo status</label>
+        <select id="newStatus">
+          <option value="">(não alterar)</option>
+          <option value="OFICINA - FABRICAÇÃO">OFICINA - FABRICAÇÃO</option>
+          <option value="LOGÍSTICA - PÓS FABRICAÇÃO">LOGÍSTICA - PÓS FABRICAÇÃO</option>
+          <option value="PINTURA">PINTURA</option>
+          <option value="LOGÍSTICA - PÓS PINTURA">LOGÍSTICA - PÓS PINTURA</option>
+          <option value="BORDO - PRODUÇÃO">BORDO - PRODUÇÃO</option>
+          <option value="BAIXADO">BAIXADO</option>
+        </select>
 
-          <div>
-            <label for="selStatus">Novo status (lista fixa)</label>
-            <select id="selStatus" class="inputMid"></select>
-            <div class="hint">Sem inventar status. Sem texto solto.</div>
-          </div>
-        </div>
+        <label for="newLocal">Localização (opcional)</label>
+        <input id="newLocal" class="input" placeholder="EX: PISTA 1 / GALPÃO / CARREIRA / LINHA 2" />
 
-        <div style="margin-top:12px;">
-          <label for="inpLocal">Localização (obrigatória em FOI PAGO / PISTA)</label>
-          <input id="inpLocal" class="inputMid" placeholder="EX: PISTA 1 / GALPÃO / CARREIRA 2" autocomplete="off" />
-          <div class="hint" id="localHint">Quando escolher “FOI PAGO – PISTA X”, a localização é preenchida automaticamente e fica obrigatória.</div>
-        </div>
+        <label for="newResp">Responsável (opcional)</label>
+        <input id="newResp" class="input" placeholder="EX: VERA / JULIO / MARCELO" />
 
         <div class="btnrow">
-          <button class="btnPrimary" id="btnAtualizar" disabled>ATUALIZAR</button>
-          <button class="btnGhost" id="btnRecarregar" disabled>RECARREGAR</button>
+          <button class="btnUpdate" id="btnAtualizar" disabled>ATUALIZAR</button>
+          <button class="btnReload" id="btnRecarregar" disabled>RECARREGAR</button>
         </div>
 
         <div class="hint">
-          Dica: O certo é sempre atualizar primeiro no setor que está com o S-B-O-O-L, e só depois passar para o próximo.
+          A data/hora é convertida automaticamente para o horário do celular.
+          <br/>Dica: sempre busque o SPOOL primeiro, depois atualize.
         </div>
-      </div>
-
-      <div class="section">
-        <div class="sectionTitle">Log / erros (aparece aqui, nada fica escondido)</div>
-        <pre id="logBox">Aguardando…</pre>
       </div>
     </div>
   </div>
 
-  <!-- 1) Carrega supabase-js (CDN 1). Se falhar, tenta CDN 2 automaticamente. -->
+  <!-- 1) Carrega supabase-js -->
   <script>
     function setLog(msg) {
       const el = document.getElementById("logBox");
@@ -368,7 +341,6 @@
       pill.classList.remove("b-ok","b-warn","b-bad");
       if (kind) pill.classList.add(kind);
     }
-
     function loadScript(src) {
       return new Promise((resolve, reject) => {
         const s = document.createElement("script");
@@ -379,7 +351,6 @@
         document.head.appendChild(s);
       });
     }
-
     async function ensureSupabaseLib() {
       setSbPill("carregando biblioteca…", "b-warn");
       try {
@@ -396,6 +367,8 @@
           setLog(
             "ERRO: não consegui carregar supabase-js.\n" +
             "CDN1 (unpkg) falhou e CDN2 (jsdelivr) falhou.\n\n" +
+            "Isso normalmente é rede/DNS/VPN bloqueando.\n" +
+            "Tente: desligar VPN, desligar DNS (AdGuard), trocar de rede (Wi-Fi/4G), e desativar iCloud Private Relay.\n\n" +
             "Detalhe 1: " + (e1?.message || e1) + "\n" +
             "Detalhe 2: " + (e2?.message || e2)
           );
@@ -407,110 +380,79 @@
 
   <!-- 2) App -->
   <script>
-    // ✅ SUAS CREDENCIAIS (SEM TROCAR NOMES)
-    const SUPABASE_URL = "https://tilpzusjfgxueieisws.supabase.co";
-    const SUPABASE_ANON_KEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
-
-    // ✅ Lista fixa de status (do jeito que você definiu)
-    const STATUS_FIXOS = [
-      "OFICINA - FABRICAÇÃO",
-      "LOGÍSTICA - PÓS FABRICAÇÃO",
-      "PINTURA",
-      "LOGÍSTICA - PÓS PINTURA",
-      "FOI PAGO - PISTA 1",
-      "FOI PAGO - PISTA 2",
-      "FOI PAGO - PISTA 3",
-      "FOI PAGO - PISTA 4",
-      "BORDO - PRODUÇÃO"
-    ];
+    // ✅ SUAS CREDENCIAIS (CORRIGIDO: usar a mesma variável no createClient)
+    const SUPABASE_URL = "https://tilpzusjlfgxueieisws.supabase.co";
+    const SUPABASE_APIKEY = "sb_publishable_pNIqELGC4rjHfP66OwrFHQ_bSlzcTgc";
 
     let sb = null;
     let lastTag = null;
 
     function cleanTag(raw) {
-      return (raw || "").trim().toUpperCase().replace(/\s+/g, "");
+      return (raw || "")
+        .trim()
+        .toUpperCase()
+        .replace(/\s+/g, "");
     }
 
-    function cleanUpper(raw) {
-      return (raw || "").trim().toUpperCase();
+    function formatDateBR(iso) {
+      if (!iso) return "—";
+      try {
+        const d = new Date(iso);
+        if (isNaN(d.getTime())) return String(iso);
+        return new Intl.DateTimeFormat("pt-BR", {
+          day: "2-digit", month: "2-digit", year: "numeric",
+          hour: "2-digit", minute: "2-digit"
+        }).format(d);
+      } catch {
+        return String(iso);
+      }
     }
 
     function setOut(id, val) {
       const el = document.getElementById(id);
-      if (el) el.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
-    }
-
-    function toLocalDateTime(isoString) {
-      if (!isoString) return "—";
-      try{
-        const d = new Date(isoString);
-        if (isNaN(d.getTime())) return isoString;
-        return d.toLocaleString(); // horário local do iPhone/Android/PC
-      } catch {
-        return isoString;
-      }
+      if (!el) return;
+      el.textContent = (val === null || val === undefined || val === "") ? "—" : String(val);
     }
 
     function clearOutputs() {
-      setOut("outTag", "—");
+      setOut("outNome", "—");
       setOut("outStatus", "—");
       setOut("outLocalizacao", "—");
       setOut("outResponsavel", "—");
       setOut("outAtualizado", "—");
     }
 
-    function setUpdateEnabled(on) {
-      const btnAtualizar = document.getElementById("btnAtualizar");
-      const btnRecarregar = document.getElementById("btnRecarregar");
-      if (btnAtualizar) btnAtualizar.disabled = !on;
-      if (btnRecarregar) btnRecarregar.disabled = !on;
+    function setButtons(enabled) {
+      document.getElementById("btnAtualizar").disabled = !enabled;
+      document.getElementById("btnRecarregar").disabled = !enabled;
     }
 
-    function fillStatusSelect() {
-      const sel = document.getElementById("selStatus");
-      if (!sel) return;
-      sel.innerHTML = "";
-      for (const s of STATUS_FIXOS) {
-        const opt = document.createElement("option");
-        opt.value = s;
-        opt.textContent = s;
-        sel.appendChild(opt);
-      }
-    }
-
-    function applyLocationRule() {
-      const sel = document.getElementById("selStatus");
-      const loc = document.getElementById("inpLocal");
-      const hint = document.getElementById("localHint");
-      if (!sel || !loc) return;
-
-      const st = sel.value || "";
-
-      // Se for FOI PAGO - PISTA X: preencher e travar
-      if (st.startsWith("FOI PAGO - PISTA")) {
-        const pista = st.replace("FOI PAGO - ", "").trim(); // "PISTA 1"
-        loc.value = pista;
-        loc.disabled = true;
-        if (hint) hint.textContent = "OK: selecionou “FOI PAGO”. Localização foi preenchida automaticamente.";
-        return;
-      }
-
-      // Caso contrário: liberar digitação (mas pode ficar em branco)
-      loc.disabled = false;
-      if (hint) hint.textContent = "Se estiver em logística/pátio, preencha a localização (pista/galpão/carreira).";
+    async function pingSupabase() {
+      // Ping simples pra confirmar rede + chave + tabela
+      const { error } = await sb.from("spools").select("id").limit(1);
+      if (error) return error;
+      return null;
     }
 
     async function init() {
-      fillStatusSelect();
-      applyLocationRule();
-
       const ok = await ensureSupabaseLib();
       if (!ok) return;
 
       try {
-        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        setSbPill("conectado ✅", "b-ok");
-        setLog("Pronto. Cole um TAG e clique BUSCAR.");
+        sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_APIKEY);
+        const pingErr = await pingSupabase();
+        if (pingErr) {
+          setSbPill("conectou, mas sem acesso ❌", "b-bad");
+          setLog(
+            "Conectei, mas não consegui ler a tabela.\n\n" +
+            "Mensagem: " + pingErr.message + "\n" +
+            "Dica: isso pode ser RLS/Policy ou chave errada.\n"
+          );
+          return;
+        }
+
+        setSbPill("online ✅", "b-ok");
+        setLog("Pronto. Cole um TAG de SPOOL e clique BUSCAR.");
       } catch (e) {
         setSbPill("erro no client", "b-bad");
         setLog("ERRO criando client: " + (e?.message || e));
@@ -518,15 +460,21 @@
     }
 
     async function buscar() {
-      if (!sb) { setLog("Ainda não conectou no Supabase."); return; }
+      if (!sb) {
+        setLog("Ainda não conectou no Supabase. Veja o status acima.");
+        return;
+      }
 
       const input = document.getElementById("tagInput");
       const tag = cleanTag(input?.value);
 
-      if (!tag) { setLog("Cole um TAG válido primeiro."); return; }
+      if (!tag) {
+        setLog("Cole um TAG válido primeiro.");
+        return;
+      }
 
       clearOutputs();
-      setUpdateEnabled(false);
+      setButtons(false);
       setLog("Buscando: " + tag + " …");
 
       try {
@@ -537,134 +485,149 @@
           .limit(1);
 
         if (error) {
-          setLog("Erro buscando no banco:\n" + JSON.stringify(error, null, 2));
+          setLog(
+            "Erro buscando no banco:\n" +
+            JSON.stringify(
+              {
+                message: error.message,
+                details: error.details || "",
+                hint: error.hint || "",
+                code: error.code || ""
+              },
+              null,
+              2
+            )
+          );
           return;
         }
 
         if (!data || data.length === 0) {
           setLog("Não achei esse TAG no banco: " + tag);
-          setOut("outTag", tag);
           setOut("outStatus", "NÃO ENCONTRADO");
           lastTag = null;
           return;
         }
 
         const row = data[0];
-        lastTag = row.nome_spool;
+        lastTag = tag;
 
-        setOut("outTag", row.nome_spool);
+        setLog("Encontrado ✅");
+        setOut("outNome", row.nome_spool);
         setOut("outStatus", row.status);
         setOut("outLocalizacao", row.localizacao);
         setOut("outResponsavel", row.responsavel);
-        setOut("outAtualizado", toLocalDateTime(row.atualizado_em));
+        setOut("outAtualizado", formatDateBR(row.atualizado_em));
 
-        // pré-seleciona o status atual no dropdown (se existir)
-        const sel = document.getElementById("selStatus");
-        if (sel && row.status && STATUS_FIXOS.includes(row.status)) {
-          sel.value = row.status;
-          applyLocationRule();
-        }
-
-        setUpdateEnabled(true);
-        setLog("Encontrado ✅ Agora você pode atualizar o andamento.");
+        setButtons(true);
       } catch (e) {
-        setLog("Falha geral:\n" + (e?.message || e));
+        // Quando aparece "TypeError: Load failed" é quase sempre rede/DNS/VPN no iPhone
+        const msg = (e?.message || String(e));
+        setLog(
+          "Falha geral (rede/DNS/VPN bloqueando).\n\n" +
+          "Detalhe: " + msg + "\n\n" +
+          "Checklist rápido no iPhone:\n" +
+          "1) Desligue VPN\n" +
+          "2) Se tiver DNS/AdGuard, desative\n" +
+          "3) Desative iCloud Private Relay (se estiver ligado)\n" +
+          "4) Troque de rede (Wi-Fi <-> 4G/5G)\n"
+        );
       }
     }
 
     async function atualizar() {
-      if (!sb) { setLog("Ainda não conectou no Supabase."); return; }
-      if (!lastTag) { setLog("Busque um TAG antes de atualizar."); return; }
-
-      const resp = cleanUpper(document.getElementById("inpResp")?.value);
-      const statusNovo = document.getElementById("selStatus")?.value || "";
-      const locEl = document.getElementById("inpLocal");
-      const local = cleanUpper(locEl?.value);
-
-      if (!resp) {
-        setLog("ERRO: Responsável é obrigatório.");
+      if (!lastTag) {
+        setLog("Busque um SPOOL primeiro.");
         return;
       }
 
-      if (!statusNovo || !STATUS_FIXOS.includes(statusNovo)) {
-        setLog("ERRO: Selecione um status válido.");
+      const newStatus = document.getElementById("newStatus").value;
+      const newLocal = (document.getElementById("newLocal").value || "").trim();
+      const newResp  = (document.getElementById("newResp").value || "").trim();
+
+      if (!newStatus && !newLocal && !newResp) {
+        setLog("Nada para atualizar. Selecione um status ou preencha localização/responsável.");
         return;
       }
 
-      // Regra: FOI PAGO - PISTA X -> localização obrigatória (e já preenchida)
-      if (statusNovo.startsWith("FOI PAGO - PISTA")) {
-        if (!local) {
-          setLog("ERRO: Em FOI PAGO / PISTA, a localização é obrigatória.");
-          return;
-        }
-      }
+      setLog("Atualizando: " + lastTag + " …");
 
-      setLog("Atualizando " + lastTag + " …");
-
-      // atualizado_em: agora (ISO)
-      const nowIso = new Date().toISOString();
+      const patch = {
+        atualizado_em: new Date().toISOString()
+      };
+      if (newStatus) patch.status = newStatus;
+      if (newLocal) patch.localizacao = newLocal;
+      if (newResp)  patch.responsavel = newResp;
 
       try {
-        const { error } = await sb
+        const { data, error } = await sb
           .from("spools")
-          .update({
-            status: statusNovo,
-            localizacao: local || null,
-            responsavel: resp,
-            atualizado_em: nowIso
-          })
-          .eq("nome_spool", lastTag);
+          .update(patch)
+          .eq("nome_spool", lastTag)
+          .select("nome_spool,status,localizacao,responsavel,atualizado_em")
+          .limit(1);
 
         if (error) {
-          setLog("Erro ao atualizar:\n" + JSON.stringify(error, null, 2));
+          setLog(
+            "Erro atualizando:\n" +
+            JSON.stringify(
+              {
+                message: error.message,
+                details: error.details || "",
+                hint: error.hint || "",
+                code: error.code || ""
+              },
+              null,
+              2
+            )
+          );
           return;
         }
 
-        setLog("Atualizado ✅ Agora todo mundo vê.");
-        // Recarrega para refletir
-        await buscar();
+        if (!data || data.length === 0) {
+          setLog("Atualizei, mas não retornou linha. (Verifique Policy/RLS).");
+          return;
+        }
+
+        const row = data[0];
+        setLog("Atualizado ✅");
+        setOut("outNome", row.nome_spool);
+        setOut("outStatus", row.status);
+        setOut("outLocalizacao", row.localizacao);
+        setOut("outResponsavel", row.responsavel);
+        setOut("outAtualizado", formatDateBR(row.atualizado_em));
+
       } catch (e) {
-        setLog("Falha geral atualizando:\n" + (e?.message || e));
+        const msg = (e?.message || String(e));
+        setLog(
+          "Falha geral (rede/DNS/VPN bloqueando).\n" +
+          "Detalhe: " + msg
+        );
       }
     }
 
     function limpar() {
       const input = document.getElementById("tagInput");
       if (input) input.value = "";
-      const resp = document.getElementById("inpResp");
-      const loc = document.getElementById("inpLocal");
-      if (resp) resp.value = "";
-      if (loc) loc.value = "";
+      document.getElementById("newStatus").value = "";
+      document.getElementById("newLocal").value = "";
+      document.getElementById("newResp").value = "";
       lastTag = null;
       clearOutputs();
-      setUpdateEnabled(false);
-      applyLocationRule();
-      setLog("Limpo. Cole um TAG e clique BUSCAR.");
+      setButtons(false);
+      setLog("Limpo. Cole um TAG de SPOOL e clique BUSCAR.");
     }
 
     window.addEventListener("load", () => {
       init();
 
-      const btnBuscar = document.getElementById("btnBuscar");
-      const btnLimpar = document.getElementById("btnLimpar");
-      const btnAtualizar = document.getElementById("btnAtualizar");
-      const btnRecarregar = document.getElementById("btnRecarregar");
-      const input = document.getElementById("tagInput");
-      const sel = document.getElementById("selStatus");
+      document.getElementById("btnBuscar").addEventListener("click", buscar);
+      document.getElementById("btnLimpar").addEventListener("click", limpar);
+      document.getElementById("btnAtualizar").addEventListener("click", atualizar);
+      document.getElementById("btnRecarregar").addEventListener("click", buscar);
 
-      if (btnBuscar) btnBuscar.addEventListener("click", buscar);
-      if (btnLimpar) btnLimpar.addEventListener("click", limpar);
-      if (btnAtualizar) btnAtualizar.addEventListener("click", atualizar);
-      if (btnRecarregar) btnRecarregar.addEventListener("click", buscar);
-
-      if (sel) sel.addEventListener("change", applyLocationRule);
-
-      // Enter busca
-      if (input) {
-        input.addEventListener("keydown", (ev) => {
-          if (ev.key === "Enter") buscar();
-        });
-      }
+      document.getElementById("tagInput").addEventListener("keydown", (ev) => {
+        if (ev.key === "Enter") buscar();
+      });
     });
   </script>
 </body>
